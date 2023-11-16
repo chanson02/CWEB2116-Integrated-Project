@@ -14,6 +14,25 @@ include ('serverconnect.php');
 include('header.php')
 ?>
 
+  <script>
+            function displayFromDatabase(filter,sortC,sortE){
+                $.ajax({
+                    url: "fetchIndex.php",
+                    type: "POST",
+                    async: false,
+                    data: {
+                        "display": 1,
+                        "filterCat": filter,
+                        "sortC":sortC,
+                        "sortE":sortE
+                    },
+                    success:function (data) {
+                        $("#box").html(data);
+                    }
+
+                })
+            }
+  </script>
 <body class="form-v8 loggedin" id="fade" onload="displayFromDatabase(0,1,1)">
 
 <div id="loader">

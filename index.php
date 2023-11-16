@@ -296,23 +296,6 @@ if ($_SESSION['username'] == 'administrator'){
 
                 })
             }
-            function displayFromDatabase(filter,sortC,sortE){
-                $.ajax({
-                    url: "fetchIndex.php",
-                    type: "POST",
-                    async: false,
-                    data: {
-                        "display": 1,
-                        "filterCat": filter,
-                        "sortC":sortC,
-                        "sortE":sortE
-                    },
-                    success:function (data) {
-                        $("#box").html(data);
-                    }
-
-                })
-            }
 
             function addCart(eqID) {
                 console.log(eqID);

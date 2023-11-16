@@ -1,5 +1,4 @@
 <?php
-session_start();
 include('serverconnect.php');
 if(isset($_POST['view'])){//When the notification is viewed/refreshed
     $userID = $_SESSION['id'];

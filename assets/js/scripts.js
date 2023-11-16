@@ -43,7 +43,7 @@ function loadNotification(view) {
         dataType:"json",
         success:function(data) {
             $('.dropdown-menu-notif').html(data.notification);//load notification into dropdown
-            console.log(data.unread_count);
+            //console.log(data.unread_count); // annoying me
             $('#countBadge').html(data.unread_count);//update the unread count
         }
     })

@@ -6,6 +6,7 @@ if(!isset($_SESSION['loggedin'])) {
 }
 include ('serverconnect.php');
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -13,12 +14,15 @@ include ('serverconnect.php');
 include('header.php')
 ?>
 
-
 <body class="form-v8 loggedin" id="fade" onload="displayFromDatabase(0,1,1)">
 
 <div id="loader">
     <div class="loader"><div></div><div></div><div></div><div></div></div>
 </div>
+
+<script>
+  window.user_id = '<?php echo $_SESSION["id"]; ?>';
+</script>
 
 <?php
 if ($_SESSION['username'] == 'administrator'){

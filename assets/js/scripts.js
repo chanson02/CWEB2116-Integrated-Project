@@ -36,6 +36,7 @@ function loadNotification(view) {
         url:"fetchNotification.php",
         method:"POST",
         data: {
+            user_id: window.user_id,
             view:view,
             read:value //read = 'read' means that the notification is being closed, thus needs to bee marked as 'read'
         },

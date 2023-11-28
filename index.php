@@ -50,6 +50,7 @@ if ($_SESSION['username'] == 'administrator'){
     include ('navbar.php');
 }
 ?>
+
 <div style="height: 63px; opacity: 0; padding: 0; margin: 0" ></div>
 
 

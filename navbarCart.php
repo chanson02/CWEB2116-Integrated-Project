@@ -6,8 +6,8 @@ if(!isset($_SESSION['loggedin'])){
 }
 include('serverconnect.php');
 
-$addEqID = $_POST['eqID'];
-$addQty = $_POST['qty'];
+$addEqID = $_POST['eqID'] ?? null;
+$addQty = $_POST['qty'] ?? null;
 
 if (isset($_POST['eqID']) && isset($_POST['qty']) && empty($_POST['destroy_cart']) && empty($_POST['delete']) && empty($_POST['update'])){
     //When 'add to cart' action is called
@@ -85,13 +85,13 @@ if (isset($_POST['eqID']) && isset($_POST['qty']) && empty($_POST['destroy_cart'
 
 
 $max=0;
-if (is_array($_SESSION['cart'])) { $max = sizeof($_SESSION['cart']); } // don't fail if nothing in cart
+if (is_array($_SESSION['cart'] ?? null)) { $max = sizeof($_SESSION['cart']); } // don't fail if nothing in cart
 echo "<div class=\"row total-header-section\">
                 <h2 style='font-weight: bold; font-size: 25px; margin-left: 5%'>Cart</h2><p style='font-weight: lighter;color: grey; margin-left:auto; margin-right: 5%'>".$max." Equipment Added</p>
         </div>
                 
                 ";
-foreach ($_SESSION['cart'] as $i) {
+foreach ($_SESSION['cart'] ?? [] as $i) {
     $eqID = $i['id'];
     $qty = $i['qty'];
     $eqName = "";

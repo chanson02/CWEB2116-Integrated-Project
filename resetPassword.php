@@ -1,6 +1,6 @@
 <?php
 // Initialize the session
-session_start();
+if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
 include('serverconnect.php');
 // Check if the user is logged in, if not then redirect to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -50,7 +50,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             if(mysqli_stmt_execute($stmt)){
                 // Password updated successfully. Destroy the session, and redirect to login page
                 session_destroy();
-                session_start();
+                if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
                 $_SESSION['msg'] = "Password successfully reset, please login again";
                 header("location: login.php");
                 exit();

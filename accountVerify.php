@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 require 'assets/src/Exception.php';
 require 'assets/src/PHPMailer.php';
 require 'assets/src/SMTP.php';
-session_start();
+if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
 if (isset($_GET['hash'])){
     $_SESSION['msg'] = "";
     $hash = mysqli_real_escape_string($db, $_GET['hash']);

@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
 if(!isset($_SESSION['loggedin'])){
 header('Location: index.php');
 exit();

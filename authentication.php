@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
 include('serverconnect.php');
 
 if ( !isset($_POST['username'], $_POST['password']) ) {

@@ -1,6 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -10,7 +13,7 @@ if (!$_SESSION['admin']) {
 }
 include('serverconnect.php');
 
-$query = mysqli_query($db,"select distinct u.fullname, e.equipment, l.id
+$query = mysqli_query($db, "select distinct u.fullname, e.equipment, l.id
 from log l
 left join equipment e on e.id = l.equipment_id
 left join users u on l.users_id = u.id
@@ -18,7 +21,7 @@ where l.checkoutDate IS NOT NULL AND l.returnDate IS NULL");
 
 
 $NumberCheckedOut = mysqli_num_rows($query);
-if (mysqli_num_rows($query) == null){
+if (mysqli_num_rows($query) == null) {
     $NumberCheckedOut = 0;
 }
 

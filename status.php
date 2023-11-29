@@ -1,6 +1,8 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -8,7 +10,7 @@ if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
     exit(); // silence `headers already set` warning
 }
-include ('serverconnect.php');
+include('serverconnect.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -60,12 +62,14 @@ include('header.php')
 
                                     if ($row['Active'] == 1) {
                                         echo '<dt style="color:green; text-align: left";">Passed</dt>';
-                                    } elseif ($row['Active'] == 0){
+                                    } elseif ($row['Active'] == 0) {
                                         echo '<dt style="color:red; text-align: left";">Pending/Rejected</dt>';
-                                    } else echo "Error";
+                                    } else {
+                                        echo "Error";
+                                    }
 
 
-                                    ?>
+                            ?>
                                 </td>
                                 <td><?php echo $row['Action'] ?></td>
 
@@ -87,4 +91,3 @@ include('header.php')
 
 
 </body>
-

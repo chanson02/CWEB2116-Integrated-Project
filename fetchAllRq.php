@@ -1,6 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -11,7 +14,7 @@ if (!$_SESSION['admin']) {
 include('serverconnect.php');
 $userPOSTID = $_POST['id'];
 $equipmentID = $_POST['eqID'];
-$result = mysqli_query($db,"Select u.fullname, u.id, l.users_id, l.checkoutRequests_id, l.checkoutRequestDate, l.expectedReturnDate
+$result = mysqli_query($db, "Select u.fullname, u.id, l.users_id, l.checkoutRequests_id, l.checkoutRequestDate, l.expectedReturnDate
 from users u
 left join log l on u.id = l.users_id
 left join equipment e on l.equipment_id = e.id
@@ -33,5 +36,3 @@ while ($row = mysqli_fetch_array($result)) {
 }
 
 echo json_encode($users_arr);
-
-

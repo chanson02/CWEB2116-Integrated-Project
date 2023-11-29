@@ -1,6 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -28,9 +31,9 @@ while ($row = mysqli_fetch_array($result)) {
 
 };
 
-if ($catID == null){
-   $total = "-";
-   $categoryName = "-";
+if ($catID == null) {
+    $total = "-";
+    $categoryName = "-";
 
 };
 
@@ -75,7 +78,9 @@ echo "
                             </div>
                             <div class=\"card-body\" style='padding-top: 5px'>
                                 <h3 class=\"card-title\">Equipment in this category</h3> ";
-if ($catID == null){echo "-";};
+if ($catID == null) {
+    echo "-";
+};
 $getEqName = mysqli_query($db, "Select e.equipment, e.id from EqManage.categories c
 left join equipment e on c.id = e.category
 where c.id = '$catID'");
@@ -88,7 +93,7 @@ while ($row = mysqli_fetch_array($getEqName)) {
 }
 
 
-                                echo "
+echo "
                             </div>
                             <div id=\"chartContainer2\"></div>
                             <div class=\"card-footer\">

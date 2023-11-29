@@ -1,19 +1,23 @@
 <?php
+
 include('serverconnect.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
 require 'assets/src/Exception.php';
 require 'assets/src/PHPMailer.php';
 require 'assets/src/SMTP.php';
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if (isset($_GET['hash'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if (isset($_GET['hash'])) {
     $_SESSION['msg'] = "";
     $hash = mysqli_real_escape_string($db, $_GET['hash']);
     $query = "Update users set active = '1' where hash = '$hash' and active = '0'";
-    if ($result = mysqli_query($db, $query)){
-        if (mysqli_affected_rows($db) == 0){ //Meaning active is already = 1, and the account is activated already
+    if ($result = mysqli_query($db, $query)) {
+        if (mysqli_affected_rows($db) == 0) { //Meaning active is already = 1, and the account is activated already
             $_SESSION['msg'] = "Account is already activated, please login with your credentials"; //Set notification
-        } else{
+        } else {
             $_SESSION['msg'] = "Account is activated, you may now login"; //Set notification
 
             $sql = "SELECT email FROM EqManage.users WHERE hash = ?"; //Prepared statement used as it handles with user database
@@ -27,7 +31,7 @@ if (isset($_GET['hash'])){
                 // Attempt to execute the prepared statement
                 if (mysqli_stmt_execute($stmt)) {
                     $result = mysqli_stmt_get_result($stmt);
-                    while ($row = mysqli_fetch_assoc($result)){
+                    while ($row = mysqli_fetch_assoc($result)) {
                         $email = $row['email']; //If email was found with specified hash, set that as an email address
                     }
 
@@ -38,7 +42,7 @@ if (isset($_GET['hash'])){
             }
 
 
-            $mail = new PHPMailer;
+            $mail = new PHPMailer();
             $mail->isSMTP();
             $mail->Host = 'smtp-relay.sendinblue.com';
             $mail->SMTPAuth = true;// Enable SMTP authentication
@@ -65,7 +69,7 @@ if (isset($_GET['hash'])){
             }
         };
         header("Location: login.php?tab=1");
-    } else{
+    } else {
         $_SESSION['msg'] = "The link is invalid, please try again";
         header("Location: login.php?tab=1");
     }

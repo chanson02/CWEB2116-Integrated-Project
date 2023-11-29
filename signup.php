@@ -1,5 +1,8 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
 
 // initializing variables
 $username = "";
@@ -12,15 +15,23 @@ include('serverconnect.php');
 // REGISTER USER
 if (isset($_POST['reg_user'])) {
     // receive all input values from the form
-    $fullname = mysqli_real_escape_string($db,$_POST['fullname']);
+    $fullname = mysqli_real_escape_string($db, $_POST['fullname']);
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $email = mysqli_real_escape_string($db, $_POST['email']);
     $password_1 = mysqli_real_escape_string($db, $_POST['password_1']);
     $password_2 = mysqli_real_escape_string($db, $_POST['password_2']);
-    if (empty($fullname)) { array_push($errors, "Full Name is required"); }
-    if (empty($username)) { array_push($errors, "Username is required"); }
-    if (empty($email)) { array_push($errors, "Email is required"); }
-    if (empty($password_1)) { array_push($errors, "Password is required"); }
+    if (empty($fullname)) {
+        array_push($errors, "Full Name is required");
+    }
+    if (empty($username)) {
+        array_push($errors, "Username is required");
+    }
+    if (empty($email)) {
+        array_push($errors, "Email is required");
+    }
+    if (empty($password_1)) {
+        array_push($errors, "Password is required");
+    }
     if ($password_1 != $password_2) {
         array_push($errors, "The two passwords do not match");
     }
@@ -47,7 +58,7 @@ if (isset($_POST['reg_user'])) {
         $_SESSION['username'] = $username;
         $_SESSION['fullname'] = $fullname;
         $_SESSION['loggedin'] = "You are now logged in";
-        $_SESSION['msg']="Updation successfully completed";
+        $_SESSION['msg'] = "Updation successfully completed";
         header("Location: login.php?success=1");
     }
 }

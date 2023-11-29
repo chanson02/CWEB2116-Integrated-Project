@@ -1,6 +1,8 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -79,7 +81,7 @@ include('serverconnect.php');
 <?php
 
 if ($_SESSION['admin']) {
-    include ('adminModal.php');
+    include('adminModal.php');
 }
 
 ?>

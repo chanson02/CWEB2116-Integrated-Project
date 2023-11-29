@@ -2,8 +2,10 @@
 include('serverconnect.php');
 ?>
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: index.php');
     exit();
 }
@@ -35,33 +37,33 @@ include("navbar.php");
             <?php
 
             $user = "";
-            $equipment = "";
+$equipment = "";
 
 
 
-            $user = $_SESSION['name'];
-            $equipment = $_POST['Equipments'];
-            $equipment_id = $_GET['selected'];
-            echo $equipment_id;
+$user = $_SESSION['name'];
+$equipment = $_POST['Equipments'];
+$equipment_id = $_GET['selected'];
+echo $equipment_id;
 
 
-            $selected_equipment = mysqli_query($db,"select * from equipment where id=$equipment_id ");
+$selected_equipment = mysqli_query($db, "select * from equipment where id=$equipment_id ");
 
 
-            while ($row = mysqli_fetch_array($selected_equipment)){
-                $equipment_name = $row['equipment'];
-                echo $equipment_name;
-            }
+while ($row = mysqli_fetch_array($selected_equipment)) {
+    $equipment_name = $row['equipment'];
+    echo $equipment_name;
+}
 
-            echo '<h3 style="text-align: center"><b>Equipment Selected: ',"$equipment_name",'</b></h3>';
-            echo '<textarea type="text" id="purpose" name="purpose" placeholder="Purpose/Location/Date to be returned" style="margin: 0 auto; margin-left: 30%; margin-right: 30%; width: 40%; height: 20%;padding: 10px 15px; border: 1px solid #ccc;
+echo '<h3 style="text-align: center"><b>Equipment Selected: ',"$equipment_name",'</b></h3>';
+echo '<textarea type="text" id="purpose" name="purpose" placeholder="Purpose/Location/Date to be returned" style="margin: 0 auto; margin-left: 30%; margin-right: 30%; width: 40%; height: 20%;padding: 10px 15px; border: 1px solid #ccc;
   border-radius: 4px; margin-top: 10px"></textarea>';
-            echo "<h1 style='text-align: center'><b>$equipment_name</b></h1>";
+echo "<h1 style='text-align: center'><b>$equipment_name</b></h1>";
 
 
 
 
-            ?>
+?>
 
             <form method="post" action="checkout-process.php">
         <p><?php echo $equipment_name; ?> </p>

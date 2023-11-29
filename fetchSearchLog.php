@@ -1,6 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -38,14 +41,14 @@ while ($row = mysqli_fetch_array($result)) {
     $username = $row['fullname'];
     $eqName = $row['equipment'];
 
-    $checkoutRequestDate = explode(" ",$row['checkoutRequestDate']);
-    $expectedReturnDate = explode(" ",$row['expectedReturnDate']);
-    $checkoutDate = explode(" ",$row['checkoutDate']);
-    $returnDate = explode(" ",$row['returnDate']);
+    $checkoutRequestDate = explode(" ", $row['checkoutRequestDate']);
+    $expectedReturnDate = explode(" ", $row['expectedReturnDate']);
+    $checkoutDate = explode(" ", $row['checkoutDate']);
+    $returnDate = explode(" ", $row['returnDate']);
 
 };
 
-if ($eqID == null){
+if ($eqID == null) {
     $rqID = "-";
     $eqID = "-";
     $userID = "-";
@@ -54,10 +57,10 @@ if ($eqID == null){
     $checkoutDate = "-";
     $returnDate = "-";
 };
-if ($returnDate[0] == null){
+if ($returnDate[0] == null) {
     $returnDate[0] = "Not returned yet";
 }
-if ($checkoutDate[0] == null){
+if ($checkoutDate[0] == null) {
     $checkoutDate[0] = "Not checked out yet";
 }
 

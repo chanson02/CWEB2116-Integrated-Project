@@ -1,6 +1,8 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -60,7 +62,7 @@ include('serverconnect.php');
 
 <?php
 if ($_SESSION['admin']) {
-    include ('adminModal.php');
+    include('adminModal.php');
 }
 
 ?>
@@ -106,18 +108,22 @@ if ($_SESSION['admin']) {
 
     <?php
     $id = $_GET['id'];
-    $type = $_GET['type'];
-    $target = "";
-    switch ($type){
-        case 1 : $target = "userSelect"; break;
-        case 2 : $target = "eqSelect"; break;
-        case 3 : $target = "logSelect"; break;
-        case 4 : $target = "requestSelect"; break;
-        case 5 : $target = "categorySelect";
-    }
-    if ($id != null){
-        echo "$('#$target').val('$id');
+$type = $_GET['type'];
+$target = "";
+switch ($type) {
+    case 1: $target = "userSelect";
+        break;
+    case 2: $target = "eqSelect";
+        break;
+    case 3: $target = "logSelect";
+        break;
+    case 4: $target = "requestSelect";
+        break;
+    case 5: $target = "categorySelect";
+}
+if ($id != null) {
+    echo "$('#$target').val('$id');
     $('#$target').trigger('change');";
-    }
-    ?>
+}
+?>
 </script>

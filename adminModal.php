@@ -55,4 +55,3 @@
 <script src="assets/js/select2.min.js"></script>
 <!--Scripts only required by Admin Pages-->
 <script src="assets/js/adminScript.js"></script>
-

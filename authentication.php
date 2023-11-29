@@ -1,10 +1,13 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
 include('serverconnect.php');
 
-if ( !isset($_POST['username'], $_POST['password']) ) {
+if (!isset($_POST['username'], $_POST['password'])) {
     // Could not get the data
-    die ('Please fill both the username and password field!');
+    die('Please fill both the username and password field!');
 }
 if ($stmt = $db->prepare('SELECT id, password FROM users WHERE username = ?')) {//Get the id and password from the users database
     $stmt->bind_param('s', $_POST['username']);
@@ -21,7 +24,7 @@ if ($stmt->num_rows > 0) {//account exists
         session_regenerate_id();
         $_SESSION['loggedin'] = true;//Creates session
         $fullusername = $_POST['username'];
-        $lastlog = mysqli_query($db,"select * from users where username ='$fullusername'");
+        $lastlog = mysqli_query($db, "select * from users where username ='$fullusername'");
         $row = mysqli_fetch_array($lastlog);
         $fullname = $row['fullname'];
         //Setting session variables

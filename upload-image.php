@@ -1,5 +1,6 @@
 <?php
-if(isset($_POST["image"])){
+
+if(isset($_POST["image"])) {
     $data = $_POST["image"]; //This contains a string that looks like "data:image/png;base64,abc123••••"
     $image_array_1 = explode(";", $data); //The string is split at ;, so it separates to "data:image/png" "base64,abc1abc123••••"
     $image_array_2 = explode(",", $image_array_1[1]);//Split "base64" with "abc123••••"
@@ -13,4 +14,3 @@ if(isset($_POST["image"])){
     //This hidden input is used to store the image directory of the selected when adding equipment to database
     echo '<img src="'.$imageName.'" class="img-thumbnail" value"'.$randomNumber.'" width="250" height="250" />';//Display the image
 }
-?>

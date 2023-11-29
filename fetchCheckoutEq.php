@@ -1,6 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -10,7 +13,7 @@ if (!$_SESSION['admin']) {
 }
 include('serverconnect.php');
 
-$result = mysqli_query($db,"select distinct e.equipment, e.barcodeID, e.id
+$result = mysqli_query($db, "select distinct e.equipment, e.barcodeID, e.id
 from equipment e
 inner join log l
 on e.id = l.equipment_id
@@ -19,7 +22,7 @@ where l.returnDate IS NULL and l.checkoutDate IS NULL");
 echo "<select id=\"eqselect\" style=\"width: 100%; text-align: left;margin-bottom: 10px\" >";
 echo "<option value=\"\">Select equipment</option>";
 
-while ($row = mysqli_fetch_array($result)){
+while ($row = mysqli_fetch_array($result)) {
     $equipmentName = $row['equipment'];
     $equipmentID = $row['id'];
     $barcodeID = $row['barcodeID'];
@@ -28,4 +31,3 @@ while ($row = mysqli_fetch_array($result)){
 echo " </select>";
 echo "<script src=\"assets/js/select2.min.js\"></script>
 <script src=\"assets/js/adminScript.js\"></script>";
-?>

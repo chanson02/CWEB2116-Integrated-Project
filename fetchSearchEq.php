@@ -1,6 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -17,7 +20,7 @@ left join categories c on e.category = c.id
 where e.id = '$eqID'
 ";
 $borrowing = 0;
-$borrowed =0;
+$borrowed = 0;
 $overdue = 0;
 $result = mysqli_query($db, $query);
 while ($row = mysqli_fetch_array($result)) {
@@ -28,9 +31,9 @@ while ($row = mysqli_fetch_array($result)) {
     $catID = $row['id'];
 };
 
-if ($eqID == null){
+if ($eqID == null) {
     $totalQty = "-";
-    $leftQuantity ="-";
+    $leftQuantity = "-";
     $overdue = "-";
     $catName = "-";
     $eqName = "-";

@@ -1,6 +1,8 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -9,7 +11,7 @@ if (!$_SESSION['admin']) {
     exit(); // silence `headers already set` warning
 }
 
-include ('serverconnect.php');
+include('serverconnect.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -24,15 +26,15 @@ include('header.php')
 
 <?php
 if ($_SESSION['admin']) {
-    include ('adminNavbar.php');
-} else{
-    include ('navbar.php');
+    include('adminNavbar.php');
+} else {
+    include('navbar.php');
 }
 ?>
 
 <div class="content">
     <div style="height: 63px; opacity: 0; padding: 0; margin: 0" ></div>
-    <?php if (isset($_GET['verify']) && $_GET['verify'] == 1){
+    <?php if (isset($_GET['verify']) && $_GET['verify'] == 1) {
         echo '<p style="color: green" >Successfully Verified</p>';
     } ?>
 
@@ -82,7 +84,7 @@ if ($_SESSION['admin']) {
 <?php
 
 if ($_SESSION['admin']) {
-    include ('adminModal.php');
+    include('adminModal.php');
 }
 
 ?>
@@ -124,4 +126,3 @@ window.onload = function () {
 </script>
 
 </body>
-

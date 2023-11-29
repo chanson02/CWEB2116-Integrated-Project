@@ -1,7 +1,8 @@
 <?php
+
 include('serverconnect.php');
 
-if(isset($_POST['view'])){//When the notification is viewed/refreshed
+if(isset($_POST['view'])) {//When the notification is viewed/refreshed
     $userID = $_POST['user_id'] ?? null;
     # my user is 13, you can force me to get a notification by running
     # INSERT INTO notification (target, message, status, datetime) VALUES (13, 'Notification!!!', 0, NOW());
@@ -12,7 +13,7 @@ if(isset($_POST['view'])){//When the notification is viewed/refreshed
     if(mysqli_num_rows($result) > 0) {//If there is more than one notification for the target user
         while($row = mysqli_fetch_array($result)) { //Echo all notification
             $date = $row['datetime'];
-            $formattedDate = date('M-d H:i',strtotime($date));
+            $formattedDate = date('M-d H:i', strtotime($date));
             $output .= '
   <li>
   <small><strong>'.$formattedDate.'</strong></small>
@@ -21,7 +22,7 @@ if(isset($_POST['view'])){//When the notification is viewed/refreshed
   </li>
   ';
         }
-    }else{//If there is no unread notification in the database
+    } else {//If there is no unread notification in the database
         $output .= '<li><p>No Notification Found</p></li>';
     }
     $status_query = "SELECT * FROM notification WHERE status=0 and target = '$userID'";
@@ -32,8 +33,7 @@ if(isset($_POST['view'])){//When the notification is viewed/refreshed
         'unread_count'  => $count
     ); //Store notification and number of unread count
 
-    if($_POST["read"] == "read")//When the notification dropdown is closed, the message will be marked as read
-    {
+    if($_POST["read"] == "read") {//When the notification dropdown is closed, the message will be marked as read
         $update_query = "UPDATE notification SET status = 1 WHERE status=0 and target = '$userID'"; //Set status as 'read'
         mysqli_query($db, $update_query);
     }

@@ -1,4 +1,5 @@
 <?php
+
 //session_start();
 
 // initializing variables
@@ -14,11 +15,10 @@ $db = mysqli_connect('localhost', 'root', 'abc', 'EqManage');
 
 // Can change admin by doing
 // UPDATE users SET admin = 1 WHERE id=13;
-    # my user is 13, you can force me to get a notification by running
-    # INSERT INTO notification (target, message, status, datetime) VALUES (13, 'Notification!!!', 0, NOW());
+# my user is 13, you can force me to get a notification by running
+# INSERT INTO notification (target, message, status, datetime) VALUES (13, 'Notification!!!', 0, NOW());
 
-if ( mysqli_connect_errno() ) {
+if (mysqli_connect_errno()) {
     // If there is an error with the connection, stop the script and display the error.
-    die ('Failed to connect to MySQL: ' . mysqli_connect_error());
+    die('Failed to connect to MySQL: ' . mysqli_connect_error());
 }
-

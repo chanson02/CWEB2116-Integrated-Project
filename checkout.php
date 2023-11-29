@@ -1,10 +1,12 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-include ('serverconnect.php');
+include('serverconnect.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,9 +22,9 @@ include('header.php');
 
 <?php
 if ($_SESSION['admin']) {
-    include ('adminNavbar.php');
-} else{
-    include ('navbar.php');
+    include('adminNavbar.php');
+} else {
+    include('navbar.php');
 } ?>
 
 <div class="content">
@@ -55,7 +57,7 @@ if ($_SESSION['admin']) {
                                     $select .= "<option id='optionvalue' disabled value=\"{$row["id"]}\" data-leftQty=\"{$row['leftQuantity']}\">{$row["equipment"]} | {$row['leftQuantity']} Left</option>";
                                 } else { //There is an equipment with left quantity > 0
                                     $select .= "<option id='optionvalue' value=\"{$row["id"]}\" data-leftQty=\"{$row['leftQuantity']}\"";
-                                    if (isset($_GET['select']) && $_GET['select'] == $row['id']){//If selection is specified in the url
+                                    if (isset($_GET['select']) && $_GET['select'] == $row['id']) {//If selection is specified in the url
                                         $select .= "selected";//Add selected in the option tag to make it pre-selected
                                     }
                                     $select .= ">{$row["equipment"]} | {$row['leftQuantity']} Left</option>";
@@ -64,8 +66,12 @@ if ($_SESSION['admin']) {
                             $select .= "</optgroup></select>";
                             echo $select;
                             mysqli_free_result($result);
-                        } else {echo "Empty Resultset From Query";}
-                    } else {echo mysqli_error($db);}
+                        } else {
+                            echo "Empty Resultset From Query";
+                        }
+                    } else {
+                        echo mysqli_error($db);
+                    }
                     ?>
 <!--Input fields for when there is nothing in the cart-->
                 <input type="text" name="location" placeholder="Location to be used" id="location" style="
@@ -79,7 +85,7 @@ if ($_SESSION['admin']) {
                 Time of Return: <input id="timefield" name="time" type="time" value="15:30">
                 <input name="request" type="submit" value="Send Request" style="width: 100%;">
                     <?php
-                        }elseif (isset($_SESSION['cart'])){
+                } elseif (isset($_SESSION['cart'])) {
                     ?>
                 <table width="100%" id="table">
                     <thead>
@@ -114,8 +120,8 @@ border-radius: 4px; margin-top: 10px;margin-bottom: 10px"></textarea>
 <!--When user selects "apply to all", it creates input fields for each equipment in cart-->
                 <div id="multi">
                     <?php
-                    foreach ($_SESSION['cart'] as $i){//Creating input fields with all the equipment in the cart with unique identifiers (equipment ID)
-                        $result = mysqli_query($db,"Select * from EqManage.equipment where id =".$i['id']);
+                    foreach ($_SESSION['cart'] as $i) {//Creating input fields with all the equipment in the cart with unique identifiers (equipment ID)
+                        $result = mysqli_query($db, "Select * from EqManage.equipment where id =".$i['id']);
                         while ($row = mysqli_fetch_array($result)) {
                             $eqName = $row['equipment'];
                         } ?>
@@ -140,10 +146,10 @@ border-radius: 4px; margin-top: 10px;margin-bottom: 10px"></textarea>
 <script>
     $(document).ready(function () {//On page load
         <?php
-        if(isset($_SESSION['cart'])){//Apply all function only needs triggering when there is items in cart
+        if(isset($_SESSION['cart'])) {//Apply all function only needs triggering when there is items in cart
             echo "applyAll();";
         }
-        ?>
+?>
 
         var today = new Date();
         var dd = today.getDate();
@@ -223,16 +229,18 @@ border-radius: 4px; margin-top: 10px;margin-bottom: 10px"></textarea>
 
     function emptyCheck(e) {//Check for empty fields before submitting form
         <?php
-            if (isset($_SESSION['cart'])){ //If cart exists
-                $php_array = array();
-                foreach ($_SESSION['cart'] as $i){
-                    array_push($php_array, $i);
-                }
-                $js_array = json_encode($php_array); //Add cart element in PHP array
-                echo "var javascript_array = ". $js_array . ";\n"; //Then pass variable to javascript
-            }else{echo "var javascript_array = null;";} //If Cart doesn't exist, set to null
+    if (isset($_SESSION['cart'])) { //If cart exists
+        $php_array = array();
+        foreach ($_SESSION['cart'] as $i) {
+            array_push($php_array, $i);
+        }
+        $js_array = json_encode($php_array); //Add cart element in PHP array
+        echo "var javascript_array = ". $js_array . ";\n"; //Then pass variable to javascript
+    } else {
+        echo "var javascript_array = null;";
+    } //If Cart doesn't exist, set to null
 
-        ?>
+?>
         if (javascript_array!=null){ //If javascript array is not empty (If cart exists)
             var checked = document.getElementById("applyAllCheck").checked; //
             //Note: this element is not present when cart is empty thus it will throw an error if its called when cart is empty
@@ -294,4 +302,3 @@ border-radius: 4px; margin-top: 10px;margin-bottom: 10px"></textarea>
 
 </script>
 </body>
-

@@ -1,10 +1,12 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
 if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-include ('serverconnect.php');
+include('serverconnect.php');
 ?>
 
 <!DOCTYPE html>
@@ -45,9 +47,9 @@ include('header.php')
 
 <?php
 if ($_SESSION['admin']) {
-    include ('adminNavbar.php');
-} else{
-    include ('navbar.php');
+    include('adminNavbar.php');
+} else {
+    include('navbar.php');
 }
 ?>
 
@@ -55,21 +57,21 @@ if ($_SESSION['admin']) {
 
 
 <div class="content">
-    <?php if (isset($_GET['sent']) && $_GET['sent'] == 1){
+    <?php if (isset($_GET['sent']) && $_GET['sent'] == 1) {
         echo '<p style="color: green" >Your request is sent</p>';
     } ?>
-    <?php if (isset($_GET['verify']) && $_GET['verify'] == 1){
+    <?php if (isset($_GET['verify']) && $_GET['verify'] == 1) {
         echo '<p style="color: green" >Successfully Verified</p>';
     } ?>
-    <?php if (isset($_GET['return']) && $_GET['return'] == 1){
+    <?php if (isset($_GET['return']) && $_GET['return'] == 1) {
         echo '<p style="color: green" >Successfully Returned</p>';
     } ?>
-    <?php if (isset($_GET['return']) && $_GET['return'] == 0){
+    <?php if (isset($_GET['return']) && $_GET['return'] == 0) {
         echo '<p style="color: red" >Error occurred, please login with the user you borrowed the equipment with</p>';
     } ?>
-    <?php if (isset($_GET['adminonly']) && $_GET['adminonly'] == 1){
+    <?php if (isset($_GET['adminonly']) && $_GET['adminonly'] == 1) {
         echo '<p style="color: red" >This page is only accessible by the admininistrator</p>';
-    } ?><?php if (isset($_GET['reset']) && $_GET['reset'] == 1){
+    } ?><?php if (isset($_GET['reset']) && $_GET['reset'] == 1) {
         echo '<p style="color: green" >Password successfully reset</p>';
     } ?>
 </div>
@@ -172,12 +174,12 @@ if ($_SESSION['admin']) {
             //      GROUP BY C.id,E.id, C.categoryName, E.equipment
             //      ORDER BY C.categoryName,E.equipment");
             //
-            //            ?>
+            //?>
             <!---->
-            <!--            --><?php //while ($row = mysqli_fetch_array($results2)) { ?>
+            <!--            --><?php //while ($row = mysqli_fetch_array($results2)) {?>
             <!---->
             <!---->
-            <!--                --><?php //echo "<div class=\"col-sm-6 col-md-5 col-lg-4 item\">"; ?>
+            <!--                --><?php //echo "<div class=\"col-sm-6 col-md-5 col-lg-4 item\">";?>
             <!---->
             <!---->
             <!---->
@@ -185,7 +187,7 @@ if ($_SESSION['admin']) {
             //                    echo "<div class=\"box\" id='box2'>";
             //                } elseif ($row['availability'] == 0){
             //                    echo "<div class=\"box\" id='box2'>";
-            //                } else echo "Error"; ?>
+            //                } else echo "Error";?>
             <!---->
             <!---->
             <!---->
@@ -198,7 +200,7 @@ if ($_SESSION['admin']) {
             //                    echo "<a style='font-style: italic; text-decoration: underline'>".$row['categoryName']."<a/><h3 class=\"name\">".$row['equipment']."</h3>";
             //                } elseif ($row['availability'] == 0){
             //                    echo "<h3 class=\"name\" style='color: orangered'>".$row['equipment']."</h3>";
-            //                } else echo "Error"; ?>
+            //                } else echo "Error";?>
             <!---->
             <!---->
             <!---->
@@ -206,10 +208,10 @@ if ($_SESSION['admin']) {
             //                    echo "<p class=\"description\">".$row['leftQuantity']." Available";
             //                } elseif ($row['availability'] == 0){
             //                    echo "<p class=\"description\" style='color: red'>Not Available";
-            //                } else echo "Error"; ?>
+            //                } else echo "Error";?>
             <!---->
             <!---->
-            <!--                --><?php //echo "</p>"; ?>
+            <!--                --><?php //echo "</p>";?>
             <!---->
             <!---->
             <!---->
@@ -217,12 +219,12 @@ if ($_SESSION['admin']) {
             //                    echo "<a href=\"direct-checkout.php?selected=".$row['id']."\" class=\"learn-more\">Borrow This Equipment »</a>";
             //                } elseif ($row['availability'] == 0){
             //                    echo "";
-            //                } else echo "Error"; ?>
+            //                } else echo "Error";?>
             <!---->
-            <!--                --><?php //echo "</div>"; ?>
-            <!--                --><?php //echo "</div>"; ?>
+            <!--                --><?php //echo "</div>";?>
+            <!--                --><?php //echo "</div>";?>
             <!---->
-            <!--            --><?php //} ?>
+            <!--            --><?php //}?>
             <!---->
             <!--        </div>-->
             <!--    </div>-->
@@ -373,4 +375,3 @@ if ($_SESSION['admin']) {
         </script>
 
 </body>
-

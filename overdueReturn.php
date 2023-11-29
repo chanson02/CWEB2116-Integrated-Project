@@ -1,4 +1,5 @@
 <?php
+
 include('serverconnect.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -33,5 +34,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo '<input id="overdueReturn" name="return" type="submit" value="Confirm Return" onclick="overdueReturn('.$rqID.')" style="width: 100%;">';
 
 }
-
-

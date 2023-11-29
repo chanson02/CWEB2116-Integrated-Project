@@ -1,6 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -10,7 +13,7 @@ if (!$_SESSION['admin']) {
 }
 include('serverconnect.php');
 
-$query = mysqli_query($db,"select * from EqManage.log l
+$query = mysqli_query($db, "select * from EqManage.log l
 left join equipment e on l.equipment_id = e.id
 where l.users_id = $userID and returnDate is null ");
 
@@ -25,7 +28,7 @@ while ($row = mysqli_fetch_array($query)) {
     echo "<li class=\"card-category\" style=\"padding-bottom: 0px; margin-bottom: 0px\"><a href='idsearch.php?logid=", $row['id'] ,"'>", $row['equipment'], " | ";
 }
 echo "</a></ul>";
-if (mysqli_num_rows($query) == null){
+if (mysqli_num_rows($query) == null) {
     $NumberCheckedOut = 0;
     echo "-";
 }

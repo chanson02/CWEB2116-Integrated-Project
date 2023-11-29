@@ -1,7 +1,9 @@
 <?php
 include('serverconnect.php');
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
@@ -54,11 +56,11 @@ if (!$_SESSION['admin']) {
 
         <?php
         if ($_SESSION['admin']) {
-            include ('adminNavbar.php');
-        } else{
-            include ('navbar.php');
+            include('adminNavbar.php');
+        } else {
+            include('navbar.php');
         }
-        ?>
+?>
         <!-- End Navbar -->
 
         <div class="content" style="background-color: #eef4f7;">
@@ -229,7 +231,7 @@ include('serverconnect.php');
 
 <?php
 if ($_SESSION['admin']) {
-    include ('adminModal.php');
+    include('adminModal.php');
 }
 ?>
 <script>

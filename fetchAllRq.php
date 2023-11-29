@@ -12,8 +12,8 @@ if (!$_SESSION['admin']) {
     exit(); // silence `headers already set` warning
 }
 include('serverconnect.php');
-$userPOSTID = $_POST['id'];
-$equipmentID = $_POST['eqID'];
+$userPOSTID = $_POST['id'] ?? null;
+$equipmentID = $_POST['eqID'] ?? null;
 $result = mysqli_query($db, "Select u.fullname, u.id, l.users_id, l.checkoutRequests_id, l.checkoutRequestDate, l.expectedReturnDate
 from users u
 left join log l on u.id = l.users_id

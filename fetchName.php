@@ -33,7 +33,7 @@ if (!$_SESSION['admin']) {
 }
 
 include('serverconnect.php');
-$equipmentID = $_POST['id'];
+$equipmentID = $_POST['id'] ?? null;
 $result = mysqli_query($db, "Select distinct u.fullname, u.id, l.users_id
 from users u
 left join log l on u.id = l.users_id

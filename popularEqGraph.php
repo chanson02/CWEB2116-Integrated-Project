@@ -15,7 +15,7 @@ if (!$_SESSION['admin']) {
 $dataPoints = array();
 
 include('serverconnect.php');
-$equipmentID = $_POST['id'];
+$equipmentID = $_POST['id'] ?? null;
 $result = mysqli_query($db, "select * from EqManage.equipment order by popularity");
 while ($row = mysqli_fetch_array($result)) {
     $popularity = $row['popularity'];

@@ -34,14 +34,14 @@ include('header.php')
         <div class="select-box">
             <label for="select-box1" class="label select-box1"><span class="label-desc">Filter By: </span> </label>
             <label for="checkoutDateRadio">
-            <input type="radio" id="checkoutDateRadio" name="filter" value="0" <?php $filter = $_GET['filter'];
+            <input type="radio" id="checkoutDateRadio" name="filter" value="0" <?php $filter = $_GET['filter'] ?? null;
 if ($filter == 0 or $filter == null) {
     echo 'checked = "checked"';
 } else {
     echo null;
 }?>  onclick="changeOption();"> Checkout Date</label>
             <label for="returnDateRadio">
-            <input type="radio" id="returnDateRadio" name="filter" value="1" <?php $filter = $_GET['filter'];
+            <input type="radio" id="returnDateRadio" name="filter" value="1" <?php $filter = $_GET['filter'] ?? null;
 if ($filter == 1) {
     echo 'checked = "checked"';
 } else {
@@ -50,25 +50,25 @@ if ($filter == 1) {
            <br>
             <label for="select-box1" class="label select-box1" id="selectLabel">Show checkout from: </label>
             <select id="select-box1" class="select" name="filtercat" onchange="changeOption()" style="width: 15%">
-                <option value="0" <?php $range = $_GET['range'];
+                <option value="0" <?php $range = $_GET['range'] ?? null;
 if ($range == 0 or $range == null) {
     echo 'selected';
 } else {
     echo null;
 }?>>--All Time--</option>
-                <option value="1" <?php $range = $_GET['range'];
+                <option value="1" <?php $range = $_GET['range'] ?? null;
 if ($range == 1) {
     echo 'selected';
 } else {
     echo null;
 }?>>Today</option>
-                <option value="2" <?php $range = $_GET['range'];
+                <option value="2" <?php $range = $_GET['range'] ?? null;
 if ($range == 2) {
     echo 'selected';
 } else {
     echo null;
 }?>>Yesturday</option>
-                <option value="3" <?php $range = $_GET['range'];
+                <option value="3" <?php $range = $_GET['range'] ?? null;
 if ($range == 3) {
     echo 'selected';
 } else {
@@ -175,7 +175,7 @@ if ($_SESSION['admin']) {
         var radios = document.getElementsByName("filter");
 
         if (userID == null){
-            userID = "<?php $ID = $_GET['user'];
+            userID = "<?php $ID = $_GET['user'] ?? null;
 if ($ID) {
     echo $ID;
 }; ?>";
@@ -204,7 +204,7 @@ if ($ID) {
         var f = document.getElementById("filterUser");
 
 
-        var userID = "<?php $ID = $_GET['user'];
+        var userID = "<?php $ID = $_GET['user'] ?? null;
 if ($ID) {
     echo $ID;
 }; ?>";

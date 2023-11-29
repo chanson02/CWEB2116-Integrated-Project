@@ -13,9 +13,9 @@ if (!$_SESSION['admin']) {
 
 include('serverconnect.php');
 
-$range = $_GET['filter']; //Can use _Request
-$filter = $_GET['range'];
-$userID = $_GET['user'];
+$range = $_GET['filter'] ?? null; //Can use _Request
+$filter = $_GET['range'] ?? null;
+$userID = $_GET['user'] ?? null;
 $query = "";
 $today = date("Y-m-d");
 $yesturday = date('Y-m-d', strtotime('now - 1 day'));

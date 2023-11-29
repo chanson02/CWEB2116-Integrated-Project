@@ -15,7 +15,7 @@ if ($_SESSION['username'] != 'administrator'){
 
 <head>
     <title>Dashboard</title>
-    <?php include('adminheader.php') ?>
+    <?php include('adminHeader.php') ?>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />

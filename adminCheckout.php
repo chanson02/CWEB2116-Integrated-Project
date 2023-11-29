@@ -6,6 +6,7 @@ if(!isset($_SESSION['loggedin'])){
 }
 if ($_SESSION['username'] != 'administrator'){
     header('Location: index.php?adminonly=1'); //Redirects to the main page if students attempts to login
+    exit(); // silence `headers already set` warning
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {//When POST request was sent

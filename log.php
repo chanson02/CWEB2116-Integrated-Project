@@ -6,6 +6,7 @@ if(!isset($_SESSION['loggedin'])){
 }
 if ($_SESSION['username'] != 'administrator'){
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 include ('serverconnect.php');
 ?>

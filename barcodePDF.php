@@ -6,6 +6,7 @@ if(!isset($_SESSION['loggedin'])){
 }
 if ($_SESSION['username'] != 'administrator'){
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 // Include the main TCPDF library (search for installation path).
 require __DIR__ . '/vendor/autoload.php';

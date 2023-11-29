@@ -6,6 +6,7 @@ if(!isset($_SESSION['loggedin'])){
 }
 if ($_SESSION['username'] != 'administrator'){
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }?>
 
 <div id="eq_button" class=" bootstrap-iso eq" style="margin-top: 10px">

@@ -253,24 +253,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $message = "Request was sent by the student. See details at requests page";
 
     //Setting notifications
-    $target = $_SESSION["id"];
-    $checkNotif = mysqli_query($db, "Select * from notification where message = '$message' and target = $target");
-    if(mysqli_num_rows($checkNotif) != null){//If notification used before, reuse the notification
-        $updateNotif = "Update EqManage.notification set status = 0 where message = '$message' and target = $target";
-        if (mysqli_query($db, $updateNotif)) {
-            $last_id = mysqli_insert_id($db);
-            echo "Notification updated. Last inserted ID is: " . $last_id;
-        } else {
-            echo "Error: " . $updateNotif . "<br>" . mysqli_error($db);
-        }
-    } else{//Insert notification to database if notification was not sent previously
-        $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$message' ,$target,0, '$today')";
-        if (mysqli_query($db, $notif_query)) {
-            $last_id = mysqli_insert_id($db);
-            echo "Notification updated. Last inserted ID is: " . $last_id;
-        } else {
-            echo "Error: " . $notif_query . "<br>" . mysqli_error($db);
-        }
+    $adminQuery = "SELECT id FROM users WHERE admin=1";
+    $adminResult = mysqli_query($db, $adminQuery);
+    while ($adminRow = mysqli_fetch_assoc($adminResult)) {
+      $target = $adminRow["id"];
+      $checkNotif = mysqli_query($db, "Select * from notification where message = '$message' and target = $target");
+      if(mysqli_num_rows($checkNotif) != null){//If notification used before, reuse the notification
+          $updateNotif = "Update EqManage.notification set status = 0 where message = '$message' and target = $target";
+          if (mysqli_query($db, $updateNotif)) {
+              $last_id = mysqli_insert_id($db);
+              echo "Notification updated. Last inserted ID is: " . $last_id;
+          } else {
+              echo "Error: " . $updateNotif . "<br>" . mysqli_error($db);
+          }
+      } else{//Insert notification to database if notification was not sent previously
+          $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$message' ,$target,0, '$today')";
+          if (mysqli_query($db, $notif_query)) {
+              $last_id = mysqli_insert_id($db);
+              echo "Notification updated. Last inserted ID is: " . $last_id;
+          } else {
+              echo "Error: " . $notif_query . "<br>" . mysqli_error($db);
+          }
+      }
     }
     $fullname = $_SESSION['fullname'];
 

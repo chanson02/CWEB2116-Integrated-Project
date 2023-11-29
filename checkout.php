@@ -19,7 +19,7 @@ include('header.php');
 </div>
 
 <?php
-if ($_SESSION['username'] == 'administrator'){
+if ($_SESSION['admin']) {
     include ('adminNavbar.php');
 } else{
     include ('navbar.php');

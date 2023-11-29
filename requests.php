@@ -4,7 +4,7 @@ if(!isset($_SESSION['loggedin'])){
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
     exit(); // silence `headers already set` warning
 }
@@ -22,7 +22,8 @@ include('header.php')
     <div class="loader"><div></div><div></div><div></div><div></div></div>
 </div>
 
-<?php if ($_SESSION['username'] == 'administrator'){
+<?php
+if ($_SESSION['admin']) {
     include ('adminNavbar.php');
 } else{
     include ('navbar.php');
@@ -80,7 +81,7 @@ include('header.php')
 
 <?php
 
-if ($_SESSION['username'] == 'administrator'){
+if ($_SESSION['admin']) {
     include ('adminModal.php');
 }
 

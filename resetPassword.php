@@ -77,7 +77,8 @@ include('header.php')
     <div class="loader"><div></div><div></div><div></div><div></div></div>
 </div>
 
-<?php if ($_SESSION['username'] == 'administrator'){
+<?php
+if ($_SESSION['admin']) {
     include ('adminNavbar.php');
 } else{
     include ('navbar.php');

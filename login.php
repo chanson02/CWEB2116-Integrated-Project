@@ -238,7 +238,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                     unset($_SESSION['error']);
                                     // Redirect user to welcome page
 
-                                    if ($_SESSION['username'] == 'administrator'){
+                                    if ($_SESSION['admin']) {
                                         header("location: dashboard.php");
                                     } else{
                                         header("location: index.php");

@@ -13,7 +13,7 @@ if (!$_SESSION['admin']) {
 }
 
 include('serverconnect.php');
-$userID = $_GET['id'];
+$userID = $_GET['id'] ?? 0;
 
 $query = "Select * from EqManage.users 
 left join log l on l.users_id = users.id 

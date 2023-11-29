@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $_SESSION['username'];
         $user_id = $_SESSION['id'];
         $equipment_id = $_POST['equipment'];
-        $purpose = $_POST['purpose'];
+        $purpose = mysqli_real_escape_string($db, $_POST['purpose']);
         $hash = md5(rand(0, 1000));
         $requestdate = date('Y-m-d H:i:s');
         $returndate = date('Y-m-d', strtotime($_POST['date']));
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo $combinedDT;
         $checkoutQty = $_POST['quantity'];
         echo "Quantity: ", $checkoutQty;
-        $location = $_POST['location'];
+        $location = mysqli_real_escape_string($db, $_POST['location']);
 
         $eqname = "";
         echo "Return date: ", $returndate;
@@ -126,13 +126,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['applyAllCheck']) && $_POST['applyAllCheck'] == "1") {
             $user = $_SESSION['username'];
             $user_id = $_SESSION['id'];
-            $purpose = $_POST['purpose'];
+            $purpose = mysqli_real_escape_string($db, $_POST['purpose']);
             $hash = md5(rand(0, 1000));
             $requestdate = date('Y-m-d H:i:s');
             $returndate = date('Y-m-d', strtotime($_POST['date']));
             $returntime = $_POST['time'];
             $combinedDT = date('Y-m-d H:i:s', strtotime("$returndate $returntime"));
-            $location = $_POST['location'];
+            $location = mysqli_real_escape_string($db, $_POST['location']);
 
             $mailEquipmentContent1 = '----------------------------------------------------------<br>';
 
@@ -189,8 +189,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             foreach ($_SESSION['cart'] as $i){
                 $user = $_SESSION['username'];
                 $user_id = $_SESSION['id'];
-                $purpose = $_POST["purpose_".$i['id']];
-                $location = $_POST['location_'.$i['id']];
+                $purpose = mysqli_real_escape_string($db, $_POST["purpose_".$i['id']]);
+                $location = mysqli_real_escape_string($db, $_POST['location_'.$i['id']]);
                 $returntime = $_POST['time_'.$i['id']];
                 $equipment_id = $i['id'];
                 $quantity = $i['qty'];
@@ -253,9 +253,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $message = "Request was sent by the student. See details at requests page";
 
     //Setting notifications
-    $checkNotif = mysqli_query($db, "Select * from notification where message = '$message' and target = '1'");
+    $target = $_SESSION["id"];
+    $checkNotif = mysqli_query($db, "Select * from notification where message = '$message' and target = $target");
     if(mysqli_num_rows($checkNotif) != null){//If notification used before, reuse the notification
-        $updateNotif = "Update EqManage.notification set status = 0 where message = '$message' and target = '1'";
+        $updateNotif = "Update EqManage.notification set status = 0 where message = '$message' and target = $target";
         if (mysqli_query($db, $updateNotif)) {
             $last_id = mysqli_insert_id($db);
             echo "Notification updated. Last inserted ID is: " . $last_id;
@@ -263,7 +264,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error: " . $updateNotif . "<br>" . mysqli_error($db);
         }
     } else{//Insert notification to database if notification was not sent previously
-        $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$message' ,1,0, '$today')";
+        $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$message' ,$target,0, '$today')";
         if (mysqli_query($db, $notif_query)) {
             $last_id = mysqli_insert_id($db);
             echo "Notification updated. Last inserted ID is: " . $last_id;
@@ -281,7 +282,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mail->Username = '';          // SMTP username
     $mail->Password = ''; // SMTP password
     $mail->SMTPSecure = 'tls';                  // Enable TLS encryption, `ssl` also accepted
-    $mail->Port = ;                          // TCP port to connect to
+    $mail->Port = 55555;                          // TCP port to connect to
     // TCP port to connect to
 
     $mail->setFrom('noreply@example.com', 'Notification System');

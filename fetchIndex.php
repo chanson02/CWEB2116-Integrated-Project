@@ -54,9 +54,9 @@ include('serverconnect.php');
 
 
 
-$filterCategory = $_POST['filterCat'];
-$sortE = $_POST['sortE'];
-$sortC = $_POST['sortC'];
+$filterCategory = $_POST['filterCat'] ?? null;
+$sortE = $_POST['sortE'] ?? null;
+$sortC = $_POST['sortC'] ?? null;
 $results = mysqli_query($db, "SELECT * FROM equipment");
 $default = mysqli_query($db, "SELECT C.categoryName, E.id, E.equipment, E.leftQuantity, E.availability, E.imgID
       FROM EqManage.equipment E
@@ -76,14 +76,12 @@ if ($filterCategory == null or $filterCategory == 0) { //if there is no filter
                 break; //No filter, Category Ascending, Equipment Ascending
             case 2: $executeQuery = $baseQuery.$groupByQuery."ORDER BY C.categoryName asc,E.equipment desc";
                 break; //No filter, Category Ascending, Equipment Descending
-                break;
         } break;
         case 2: switch ($sortE) {
             case 1: $executeQuery = $baseQuery.$groupByQuery."ORDER BY C.categoryName desc,E.equipment asc";
                 break; //No filter, Category Descending, Equipment Ascending
             case 2: $executeQuery = $baseQuery.$groupByQuery."ORDER BY C.categoryName desc,E.equipment desc";
                 break; //No filter, Category Descending, Equipment Descending
-                break;
         }
     }
 } elseif ($filterCategory != null) { //If filter is selected

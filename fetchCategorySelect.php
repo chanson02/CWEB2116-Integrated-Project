@@ -13,7 +13,7 @@ $resultset = mysqli_query($db, "select * from EqManage.categories");
 
         $category = $row['categoryName'];
         $category_id = $row['id'];
-        echo $row[$category_id];
+        echo $row[$category_id] ?? null;
 
         if (isset($_GET['selected']) && $_GET['selected'] == $category_id) {
             echo "<option name='category_id' value='$category_id' selected='selected'>$category</option>";

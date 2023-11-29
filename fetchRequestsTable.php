@@ -14,9 +14,9 @@ if (!$_SESSION['admin']) {
 
 include('serverconnect.php');
 
-$approved = $_REQUEST['approved'];
-$rejected = $_REQUEST['rejected'];
-$waiting = $_REQUEST['waiting'];
+$approved = $_REQUEST['approved'] ?? null;
+$rejected = $_REQUEST['rejected'] ?? null;
+$waiting = $_REQUEST['waiting'] ?? null;
 
 //switch ($approved){
 //    case 'true' :

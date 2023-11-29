@@ -253,7 +253,7 @@ if ($_SESSION['admin']) {
             var e = document.getElementById("cat");
             var cat = e.options[e.selectedIndex].value;
             var ncat = document.getElementById("other").value;
-            var img = document.getElementById("upload_image").value; // this was getting the wrong image?
+            var img = document.getElementById("eqImg").value; // this was getting the wrong image?
             $.ajax({
                 url: "editEq.php",
                 type: "POST",

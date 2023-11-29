@@ -6,7 +6,6 @@ if(!isset($_SESSION['loggedin'])) {
 }
 include ('serverconnect.php');
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -14,34 +13,12 @@ include ('serverconnect.php');
 include('header.php')
 ?>
 
-  <script>
-            function displayFromDatabase(filter,sortC,sortE){
-                $.ajax({
-                    url: "fetchIndex.php",
-                    type: "POST",
-                    async: false,
-                    data: {
-                        "display": 1,
-                        "filterCat": filter,
-                        "sortC":sortC,
-                        "sortE":sortE
-                    },
-                    success:function (data) {
-                        $("#box").html(data);
-                    }
 
-                })
-            }
-  </script>
 <body class="form-v8 loggedin" id="fade" onload="displayFromDatabase(0,1,1)">
 
 <div id="loader">
     <div class="loader"><div></div><div></div><div></div><div></div></div>
 </div>
-
-<script>
-  window.user_id = '<?php echo $_SESSION["id"]; ?>';
-</script>
 
 <?php
 if ($_SESSION['username'] == 'administrator'){
@@ -50,7 +27,6 @@ if ($_SESSION['username'] == 'administrator'){
     include ('navbar.php');
 }
 ?>
-
 <div style="height: 63px; opacity: 0; padding: 0; margin: 0" ></div>
 
 
@@ -293,6 +269,23 @@ if ($_SESSION['username'] == 'administrator'){
                     success:function(data){
 
                         displayFromDatabase(cat,sortC,sortE);
+                    }
+
+                })
+            }
+            function displayFromDatabase(filter,sortC,sortE){
+                $.ajax({
+                    url: "fetchIndex.php",
+                    type: "POST",
+                    async: false,
+                    data: {
+                        "display": 1,
+                        "filterCat": filter,
+                        "sortC":sortC,
+                        "sortE":sortE
+                    },
+                    success:function (data) {
+                        $("#box").html(data);
                     }
 
                 })

@@ -1,8 +1,7 @@
 <?php
 include('serverconnect.php');
-
 if(isset($_POST['view'])){//When the notification is viewed/refreshed
-    $userID = $_POST['user_id'];
+    $userID = $_SESSION['id'];
     $query = "SELECT * FROM notification where target = '$userID' and status = 0 ORDER BY id DESC";
     $result = mysqli_query($db, $query);
     $output = '';

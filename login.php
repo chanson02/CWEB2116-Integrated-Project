@@ -77,7 +77,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         } else {
                             $email = trim(mysqli_real_escape_string($db, $_POST['regEmail']));
                             $domain = substr($email, strpos($email, "@") + 1);
-                            if ($domain != "dunwoody.edu") {
+                            if ($domain != "remocademy.com") {
                                 $email_err = "Please use the school email";
                                 $_SESSION['error'] .= $email_err . " | ";
                             } else {
@@ -146,8 +146,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         $mail->isSMTP();                            // Set mailer to use SMTP
                         $mail->Host = 'smtp-relay.sendinblue.com';             // Specify main and backup SMTP servers
                         $mail->SMTPAuth = true;                     // Enable SMTP authentication
-                        $mail->Username = 'test@test.com';          // SMTP username
-                        $mail->Password = 'test'; // SMTP password
+                        $mail->Username = 'noreply@remocademy.com';          // SMTP username
+                        $mail->Password = 't4XRdhqg1EC5j0Dm'; // SMTP password
                         $mail->SMTPSecure = 'tls';                  // Enable TLS encryption, `ssl` also accepted
                         $mail->Port = 587;                          // TCP port to connect to
                         // TCP port to connect to
@@ -299,16 +299,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-right">
             <div class="tab">
                 <div class="tab-inner">
-                    <button class="tablinks <?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0){echo "active";}; ?>" onclick="openTab(event, 'signup')" id="defaultOpen">Sign Up</button>
+                    <button class="tablinks <?php if ($_GET['tab']== 0){echo "active";}; ?>" onclick="openTab(event, 'signup')" id="defaultOpen">Sign Up</button>
                 </div>
                 <div class="tab-inner">
-                    <button class="tablinks <?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1){echo "active";}; ?>" onclick="openTab(event, 'signin')">Sign In</button>
+                    <button class="tablinks <?php if ($_GET['tab']== 1){echo "active";}; ?>" onclick="openTab(event, 'signin')">Sign In</button>
                 </div>
             </div>
 
 
-                <div class="tabcontent" id="signup" style="<?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0){echo "display:block";}
-                elseif (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1){echo "display: none";}else{echo "";}; ?>">
+                <div class="tabcontent" id="signup" style="<?php if ($_GET['tab']== 0){echo "display:block";}elseif($_GET['tab'] == 1){echo "display: none";}else{echo "";}; ?>">
                     <form class="form-detail" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <div class="form-row">
                         <label class="form-row-inner">
@@ -383,7 +382,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
 
 
-            <div class="tabcontent" id="signin" style="<?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1){echo "display:block";}elseif(isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0){echo "display: none";}else{echo "";}; ?>">
+            <div class="tabcontent" id="signin" style="<?php if ($_GET['tab']== 1){echo "display:block";}elseif($_GET['tab'] == 0){echo "display: none";}else{echo "";}; ?>">
             <form class="form-detail" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
                     <div class="form-row">

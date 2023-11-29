@@ -36,14 +36,13 @@ function loadNotification(view) {
         url:"fetchNotification.php",
         method:"POST",
         data: {
-            user_id: window.user_id,
             view:view,
             read:value //read = 'read' means that the notification is being closed, thus needs to bee marked as 'read'
         },
         dataType:"json",
         success:function(data) {
             $('.dropdown-menu-notif').html(data.notification);//load notification into dropdown
-            //console.log(data.unread_count); // annoying me
+            console.log(data.unread_count);
             $('#countBadge').html(data.unread_count);//update the unread count
         }
     })

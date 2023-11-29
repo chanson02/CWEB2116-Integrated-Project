@@ -1,5 +1,5 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); } // silence a warning
+session_start();
 if(!isset($_SESSION['loggedin'])){
     header('Location: login.php');
     exit();
@@ -84,8 +84,7 @@ if (isset($_POST['eqID']) && isset($_POST['qty']) && empty($_POST['destroy_cart'
 }
 
 
-$max=0;
-if (is_array($_SESSION['cart'])) { $max = sizeof($_SESSION['cart']); } // don't fail if nothing in cart
+$max=sizeof($_SESSION['cart']);
 echo "<div class=\"row total-header-section\">
                 <h2 style='font-weight: bold; font-size: 25px; margin-left: 5%'>Cart</h2><p style='font-weight: lighter;color: grey; margin-left:auto; margin-right: 5%'>".$max." Equipment Added</p>
         </div>

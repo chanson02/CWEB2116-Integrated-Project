@@ -44,7 +44,7 @@ include('header.php')
 </script>
 
 <?php
-if ($_SESSION['username'] == 'administrator'){
+if ($_SESSION['username'] == 'administrator' || $_SESSION['username'] == 'hancooj'){
     include ('adminNavbar.php');
 } else{
     include ('navbar.php');

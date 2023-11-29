@@ -3,6 +3,8 @@ include('serverconnect.php');
 
 if(isset($_POST['view'])){//When the notification is viewed/refreshed
     $userID = $_POST['user_id'];
+    # my user is 13, you can force me to get a notification by running
+    # INSERT INTO notification (target, message, status, datetime) VALUES (13, 'Notification!!!', 0, NOW());
     $query = "SELECT * FROM notification where target = '$userID' and status = 0 ORDER BY id DESC";
     $result = mysqli_query($db, $query);
     $output = '';

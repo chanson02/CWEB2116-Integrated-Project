@@ -1,14 +1,17 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
 if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
-include ('serverconnect.php');
+include('serverconnect.php');
 require 'vendor/autoload.php';
 
 //New barcode is fetched on every page load to get the most updated barcode list
@@ -19,23 +22,25 @@ while ($row = mysqli_fetch_array($getEqName)) {
     file_put_contents($filepath, $generator->getBarcode($row['barcodeID'], $generator::TYPE_CODE_128, 3, 50));//Generating barcode and storing it to the specified directory
 } //The barcode file name has the ID of the equipment
 
-if (isset($_GET['download']) && isset($_GET['id']) && $_GET['download'] == 1){//When download link/button is pressed
-$eqID = $_GET['id']; //get the id of the equipment
-$file = $_SERVER['DOCUMENT_ROOT'] . "/EqManage/assets/barcode/" . $eqID . "_barcode.png";//get the file with the correct equipment ID
-if (file_exists($file)) {//If image file found at server directory
-    //setup parameters for prior to download
-    header('Content-Description: File Transfer');
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename='.basename($file));
-    header('Content-Transfer-Encoding: binary');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: '.filesize($file));
-    ob_clean(); //clears output buffer
-    flush();
-    readfile($file); //Downloading the file
-}else {die("Download failed, file does not exist");};
+if (isset($_GET['download']) && isset($_GET['id']) && $_GET['download'] == 1) {//When download link/button is pressed
+    $eqID = $_GET['id']; //get the id of the equipment
+    $file = $_SERVER['DOCUMENT_ROOT'] . "/EqManage/assets/barcode/" . $eqID . "_barcode.png";//get the file with the correct equipment ID
+    if (file_exists($file)) {//If image file found at server directory
+        //setup parameters for prior to download
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename='.basename($file));
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: '.filesize($file));
+        ob_clean(); //clears output buffer
+        flush();
+        readfile($file); //Downloading the file
+    } else {
+        die("Download failed, file does not exist");
+    };
 };
 ?>
 
@@ -52,28 +57,28 @@ include('header.php')
 </div>
 
 <?php
-if ($_SESSION['username'] == 'administrator'){
-    include ('adminNavbar.php');
-} else{
-    include ('navbar.php');
+if ($_SESSION['admin']) {
+    include('adminNavbar.php');
+} else {
+    include('navbar.php');
 }
 ?>
 <div style="height: 63px; opacity: 0; padding: 0; margin: 0" ></div>
 
 <div class="content">
-    <?php if (isset($_GET['sent']) && $_GET['sent'] == 1){
+    <?php if (isset($_GET['sent']) && $_GET['sent'] == 1) {
         echo '<h2>Message</h2><p style="color: red" >Your request is sent</p>';
     } ?>
-    <?php if (isset($_GET['verify']) && $_GET['verify'] == 1){
+    <?php if (isset($_GET['verify']) && $_GET['verify'] == 1) {
         echo '<h2>Message</h2><p style="color: red" >Successfully Verified</p>';
     } ?>
-    <?php if (isset($_GET['return']) && $_GET['return'] == 1){
+    <?php if (isset($_GET['return']) && $_GET['return'] == 1) {
         echo '<h2>Message</h2><p style="color: red" >Successfully Returned</p>';
     } ?>
-    <?php if (isset($_GET['return']) && $_GET['return'] == 0){
+    <?php if (isset($_GET['return']) && $_GET['return'] == 0) {
         echo '<h2>Message</h2><p style="color: red" >Error occurred, please login with the user you borrowed the equipment with</p>';
     } ?>
-    <?php if (isset($_GET['adminonly']) && $_GET['adminonly'] == 1){
+    <?php if (isset($_GET['adminonly']) && $_GET['adminonly'] == 1) {
         echo '<h2>Message</h2><p style="color: red" >This page is only accessible by site admin</p>';
     } ?>
 </div>
@@ -99,18 +104,18 @@ if ($_SESSION['username'] == 'administrator'){
 
                 <?php
                 $getEqName = mysqli_query($db, "select * from EqManage.equipment");
-                while ($row = mysqli_fetch_array($getEqName)) { //Displaying barcode is repeated for the number of equipment
-                    $eqname = $row['equipment'];
-                    $barcodeID = $row['barcodeID'];
-                ?>
+while ($row = mysqli_fetch_array($getEqName)) { //Displaying barcode is repeated for the number of equipment
+    $eqname = $row['equipment'];
+    $barcodeID = $row['barcodeID'];
+    ?>
             <div class="col-sm-6 col-md-5 col-lg-4 item">
                 <div class="box" id='box2'>
                     <h3 class="name"><?php echo $eqname ?></h3>
                     <?php
-                    $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
-                    echo '<img style="margin-bottom:20px" src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcodeID, $generator::TYPE_CODE_128)) . '">';//Display the barcode as image
-                    echo '<button type=\'button\' class=\'btn btn-link\' value=\''.$row['id'].'\' onclick="downloadBarcode(this.value)">Download This Barcode</button>'//on button pressed, the id is going to be sent via javascript
-                    ?>
+        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+    echo '<img style="margin-bottom:20px" src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcodeID, $generator::TYPE_CODE_128)) . '">';//Display the barcode as image
+    echo '<button type=\'button\' class=\'btn btn-link\' value=\''.$row['id'].'\' onclick="downloadBarcode(this.value)">Download This Barcode</button>'//on button pressed, the id is going to be sent via javascript
+    ?>
                 </div>
             </div>
                <?php } ?>
@@ -127,10 +132,9 @@ if ($_SESSION['username'] == 'administrator'){
 </body>
 <?php
 
-if ($_SESSION['username'] == 'administrator'){
-    include ('adminModal.php');
+if ($_SESSION['admin']) {
+    include('adminModal.php');
 }
 
 ?>
-
 

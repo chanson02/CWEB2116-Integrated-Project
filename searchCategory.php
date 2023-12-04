@@ -1,10 +1,14 @@
-<?php session_start();
-if(!isset($_SESSION['loggedin'])){
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }?>
 
 <div id="category_button" class=" bootstrap-iso eq" style="margin-top: 10px">
@@ -13,15 +17,15 @@ if ($_SESSION['username'] != 'administrator'){
         <select id="categorySelect" style="width: 35%; text-align: left;margin-bottom: 10px" onchange="change()" >
                 <?php
 
-                $returnResult = mysqli_query($db,"select * from EqManage.categories");
-                while ($row = mysqli_fetch_array($returnResult)){
+                $returnResult = mysqli_query($db, "select * from EqManage.categories");
+while ($row = mysqli_fetch_array($returnResult)) {
 
-                    echo "<option value=\"\">Select User</option>";
-                    $ID = $row['id'];
-                    $name = $row['categoryName'];
-                    echo "<option value='$ID'>ID: $ID | Category Name: $name</option>";
-                };
-                ?>
+    echo "<option value=\"\">Select User</option>";
+    $ID = $row['id'];
+    $name = $row['categoryName'];
+    echo "<option value='$ID'>ID: $ID | Category Name: $name</option>";
+};
+?>
         </select>
     </div>
 </div>

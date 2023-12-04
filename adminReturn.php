@@ -1,11 +1,15 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 include('serverconnect.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -51,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $message = $eqName.' was successfully returned';
         $checkNotif = mysqli_query($db, "Select * from notification where message = '$message' and target = '$userID'");
-        if(mysqli_num_rows($checkNotif) != null){//If same notification was set before, reuse it to save space and speedup query
+        if(mysqli_num_rows($checkNotif) != null) {//If same notification was set before, reuse it to save space and speedup query
             $updateNotif = "Update EqManage.notification set status = 0 where message = '$message' and target = '$userID'";
             if (mysqli_query($db, $updateNotif)) {
                 $last_id = mysqli_insert_id($db);
@@ -59,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "Error: " . $updateNotif . "<br>" . mysqli_error($db);
             }
-        } else{//If notification was not set before, insert the notification into the database
+        } else {//If notification was not set before, insert the notification into the database
             $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$message' ,'$userID',0, '$today')";
             if (mysqli_query($db, $notif_query)) {
                 $last_id = mysqli_insert_id($db);
@@ -90,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo mysqli_error($db);
         }
-    }elseif (isset($_POST['rqID'])){//If request ID is specified, return process for that particular requestID (checkoutID) will run
+    } elseif (isset($_POST['rqID'])) {//If request ID is specified, return process for that particular requestID (checkoutID) will run
         echo "rqID";
         $checkoutRequestsID = $_POST['rqID'];
         echo $checkoutRequestsID;
@@ -101,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo mysqli_error($db);
         }
-        $query = mysqli_query($db,"Select * from EqManage.requests where id='$checkoutRequestsID'");
+        $query = mysqli_query($db, "Select * from EqManage.requests where id='$checkoutRequestsID'");
         while ($row = mysqli_fetch_array($query)) {
             $totalReturnQty = $row['checkoutQty'];
             $eqID = $row['equipment_id'];

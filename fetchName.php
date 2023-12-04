@@ -1,4 +1,5 @@
 <?php
+
 //if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //$equipmentID = $_POST['eqID'];
 //$result = mysqli_query($db,"Select *
@@ -19,18 +20,21 @@
 //;
 //};
 
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 include('serverconnect.php');
-$equipmentID = $_POST['id'];
-$result = mysqli_query($db,"Select distinct u.fullname, u.id, l.users_id
+$equipmentID = $_POST['id'] ?? null;
+$result = mysqli_query($db, "Select distinct u.fullname, u.id, l.users_id
 from users u
 left join log l on u.id = l.users_id
 left join equipment e on l.equipment_id = e.id
@@ -48,5 +52,3 @@ while ($row = mysqli_fetch_array($result)) {
     $users_arr[] = array("id" => $userID, "name" => $fullname, "returnDate" => $returnDate, "eqID" => $equipmentID);
 }
 echo json_encode($users_arr);
-
-

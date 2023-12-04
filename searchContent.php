@@ -1,12 +1,15 @@
     <?php
 include('serverconnect.php');
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 //?>
 <!---->
@@ -15,7 +18,7 @@ if ($_SESSION['username'] != 'administrator'){
 <!---->
 <!--<head>-->
 <!--    <title>Dashboard</title>-->
-<!--    --><?php //include('adminHeader.php') ?>
+<!--    --><?php //include('adminHeader.php')?>
     <!-- Required meta tags -->
 <!--    <meta charset="utf-8">-->
 <!--    <meta content="width=device-width, initial-scale=1.0" name="viewport" />-->
@@ -53,33 +56,58 @@ if ($_SESSION['username'] != 'administrator'){
 
                 <!-- your content here -->
 <!--                <label for="select" style="margin-top: 20px">Search:</label>-->
-<!--                <div id="selectDiv" align="center">--><?php //include('searchContainer.php')  ?><!--</div>-->
+<!--                <div id="selectDiv" align="center">--><?php //include('searchContainer.php')?><!--</div>-->
 <!--                <select id="select" style="width: 20%; text-align: left;margin-bottom: 10px" >-->
 <!--                    <div id="selectDiv">-->
 <!--                    </div>-->
 <!--                </select>-->
                 <div align="center" style="margin-top: 10px">
                 <label for="userradio">User</label>
-                <input type="radio" id="userradio" style="margin-right: 15px" onclick="displayRadioValue()" name="type" value="1" <?php $selected = $_GET['type']; if ($selected == 1 or $selected == null){echo 'checked="checked"';};  ?>>
+                <input type="radio" id="userradio" style="margin-right: 15px" onclick="displayRadioValue()" name="type" value="1" <?php $selected = $_GET['type'];
+if ($selected == 1 or $selected == null) {
+    echo 'checked="checked"';
+};  ?>>
                 <label for="userradio">Equipment</label>
-                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="2" <?php $selected = $_GET['type']; if ($selected == 2){echo 'checked="checked"';};  ?>>
+                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="2" <?php $selected = $_GET['type'];
+if ($selected == 2) {
+    echo 'checked="checked"';
+};  ?>>
                 <label for="userradio">Log</label>
-                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="3" <?php $selected = $_GET['type']; if ($selected == 3){echo 'checked="checked"';};  ?>>
+                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="3" <?php $selected = $_GET['type'];
+if ($selected == 3) {
+    echo 'checked="checked"';
+};  ?>>
                 <label for="userradio">Request</label>
-                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="4" <?php $selected = $_GET['type']; if ($selected == 4){echo 'checked="checked"';};  ?>>
+                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="4" <?php $selected = $_GET['type'];
+if ($selected == 4) {
+    echo 'checked="checked"';
+};  ?>>
                 <label for="userradio">Category</label>
-                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="5" <?php $selected = $_GET['type']; if ($selected == 5){echo 'checked="checked"';};  ?>>
+                <input type="radio" id="userradio" style="margin-right: 15px"  onclick="displayRadioValue()" name="type" value="5" <?php $selected = $_GET['type'];
+if ($selected == 5) {
+    echo 'checked="checked"';
+};  ?>>
                 </div>
 
 
                 <?php
-                $selected = $_GET['type'];
-                if ($selected == 1 or $selected == null){include('searchUser.php');};
-                if ($selected == 2){include('searchEq.php');};
-                if ($selected == 3){include('searchLog.php');};
-                if ($selected == 4){include('searchRequests.php');};
-                if ($selected == 5){include('searchCategory.php');};
-                ?>
+$selected = $_GET['type'];
+if ($selected == 1 or $selected == null) {
+    include('searchUser.php');
+};
+if ($selected == 2) {
+    include('searchEq.php');
+};
+if ($selected == 3) {
+    include('searchLog.php');
+};
+if ($selected == 4) {
+    include('searchRequests.php');
+};
+if ($selected == 5) {
+    include('searchCategory.php');
+};
+?>
             </div>
 
 
@@ -151,7 +179,7 @@ if ($_SESSION['username'] != 'administrator'){
 //    }
 //
 //
-//    ?>
+//?>
 <!---->
 <!---->
 <!---->

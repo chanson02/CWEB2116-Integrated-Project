@@ -1,5 +1,8 @@
 <?php
-session_start();
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
 include('serverconnect.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -42,12 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header('Location: index.php?return=1');
 
 
-    } else header('Location: index.php?return=0');
+    } else {
+        header('Location: index.php?return=0');
+    }
 
 }
-
-
-
-
-
-?>

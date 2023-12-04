@@ -1,13 +1,15 @@
 <?php
 // Initialize the session
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     header("location: index.php");
     exit;
 }
-include ('serverconnect.php');
+include('serverconnect.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -92,180 +94,183 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     mysqli_stmt_close($stmt);
                 }
             }
-            }
+        }
 
 
 
-            // Validate password
-            if (empty(trim(mysqli_real_escape_string($db, $_POST["regPassword_1"])))) {
-                $password_err = "Please enter a password";
-                $_SESSION['error'] .= $password_err." | ";
-            } elseif (strlen(trim(mysqli_real_escape_string($db, $_POST["regPassword_1"]))) < 6) {
-                $password_err = "Password must have at least 6 characters";
-                $_SESSION['error'] .= $password_err." | ";
-            } else {
-                $password = trim(mysqli_real_escape_string($db, $_POST["regPassword_1"]));
-            }
+        // Validate password
+        if (empty(trim(mysqli_real_escape_string($db, $_POST["regPassword_1"])))) {
+            $password_err = "Please enter a password";
+            $_SESSION['error'] .= $password_err." | ";
+        } elseif (strlen(trim(mysqli_real_escape_string($db, $_POST["regPassword_1"]))) < 6) {
+            $password_err = "Password must have at least 6 characters";
+            $_SESSION['error'] .= $password_err." | ";
+        } else {
+            $password = trim(mysqli_real_escape_string($db, $_POST["regPassword_1"]));
+        }
 
-            // Validate confirm password
-            if (empty(trim(mysqli_real_escape_string($db, $_POST["regPassword_2"])))) {
-                $confirm_password_err = "Please confirm password";
+        // Validate confirm password
+        if (empty(trim(mysqli_real_escape_string($db, $_POST["regPassword_2"])))) {
+            $confirm_password_err = "Please confirm password";
+            $_SESSION['error'] .= $confirm_password_err." | ";
+        } else {
+            $confirm_password = trim($_POST["regPassword_2"]);
+            if (empty($password_err) && ($password != $confirm_password)) {
+                $confirm_password_err = "Password did not match";
                 $_SESSION['error'] .= $confirm_password_err." | ";
-            } else {
-                $confirm_password = trim($_POST["regPassword_2"]);
-                if (empty($password_err) && ($password != $confirm_password)) {
-                    $confirm_password_err = "Password did not match";
-                    $_SESSION['error'] .= $confirm_password_err." | ";
-                }
             }
+        }
 
-            // Check input errors before inserting in database
-            if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err) && empty($fullname_err)) {
+        // Check input errors before inserting in database
+        if (empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err) && empty($fullname_err)) {
 
-                // Prepare an insert statement
-                $sql = "INSERT INTO users (fullname, username, password, email, hash, active) VALUES (?,?,?,?,?,?)";
+            // Prepare an insert statement
+            $sql = "INSERT INTO users (fullname, username, password, email, hash, active) VALUES (?,?,?,?,?,?)";
 
-                if ($stmt = mysqli_prepare($db, $sql)) {
-                    // Bind variables to the prepared statement as parameters
-                    mysqli_stmt_bind_param($stmt, "sssssi",  $param_fullname,$param_username, $param_password, $param_email, $param_hash, $param_active);
+            if ($stmt = mysqli_prepare($db, $sql)) {
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "sssssi", $param_fullname, $param_username, $param_password, $param_email, $param_hash, $param_active);
 
-                    // Set parameters
-                    $param_username = $username;
-                    $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
-                    $param_fullname = $fullname;
-                    $param_email = $email;
-                    $param_hash = md5(rand(0,1000));
-                    $param_active = 0;
+                // Set parameters
+                $param_username = $username;
+                $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+                $param_fullname = $fullname;
+                $param_email = $email;
+                $param_hash = md5(rand(0, 1000));
+                $param_active = 0;
 
-                    // Attempt to execute the prepared statement
-                    if (mysqli_stmt_execute($stmt)) {
-                        // Redirect to login page
-                        unset($_SESSION['error']);
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt)) {
+                    // Redirect to login page
+                    unset($_SESSION['error']);
 
-                        $mail = new PHPMailer;
-                        $mail->isSMTP();                            // Set mailer to use SMTP
-                        $mail->Host = 'smtp-relay.sendinblue.com';             // Specify main and backup SMTP servers
-                        $mail->SMTPAuth = true;                     // Enable SMTP authentication
-                        $mail->Username = 'test@test.com';          // SMTP username
-                        $mail->Password = 'test'; // SMTP password
-                        $mail->SMTPSecure = 'tls';                  // Enable TLS encryption, `ssl` also accepted
-                        $mail->Port = 587;                          // TCP port to connect to
-                        // TCP port to connect to
+                    $mail = new PHPMailer();
+                    $mail->isSMTP();                            // Set mailer to use SMTP
+                    $mail->Host = 'smtp-relay.sendinblue.com';             // Specify main and backup SMTP servers
+                    $mail->SMTPAuth = true;                     // Enable SMTP authentication
+                    $mail->Username = 'test@test.com';          // SMTP username
+                    $mail->Password = 'test'; // SMTP password
+                    $mail->SMTPSecure = 'tls';                  // Enable TLS encryption, `ssl` also accepted
+                    $mail->Port = 587;                          // TCP port to connect to
+                    // TCP port to connect to
 
-                        $mail->setFrom('noreply@remocademy.com', 'Notification System');
-                        $mail->addAddress($email);   // Add a recipient
+                    $mail->setFrom('noreply@remocademy.com', 'Notification System');
+                    $mail->addAddress($email);   // Add a recipient
 
-                        $mail->isHTML(true);  // Set email format to HTML
+                    $mail->isHTML(true);  // Set email format to HTML
 
-                        $bodyContent = '<p>Welcome '.$param_fullname.'! <br>Please click this link to verify your email
+                    $bodyContent = '<p>Welcome '.$param_fullname.'! <br>Please click this link to verify your email
                         http://localhost/EqManage/accountVerify.php?hash='.$param_hash.'</p>';
 
-                        $mail->Subject = 'Account Verification';
-                        $mail->Body = $bodyContent;
+                    $mail->Subject = 'Account Verification';
+                    $mail->Body = $bodyContent;
 
-                        if (!$mail->send()) {
-                            echo 'Message could not be sent.';
-                            echo 'Mailer Error: ' . $mail->ErrorInfo;
-                        } else {
-                            echo 'Message has been sent';
-                        }
-
-                        $_SESSION['msg'] = "Account has been created. Check your email and verify your account to activate it";
-
-                        header("location: login.php?tab=1");
+                    if (!$mail->send()) {
+                        echo 'Message could not be sent.';
+                        echo 'Mailer Error: ' . $mail->ErrorInfo;
                     } else {
-                        $_SESSION['error'] = "Something went wrong. Please try again later";
+                        echo 'Message has been sent';
                     }
 
-                    // Close statement
-                    mysqli_stmt_close($stmt);
+                    $_SESSION['msg'] = "Account has been created. Check your email and verify your account to activate it";
+
+                    header("location: login.php?tab=1");
+                } else {
+                    $_SESSION['error'] = "Something went wrong. Please try again later";
                 }
-            } else {
-                header("Location: login.php?tab=0");
-            };
-            // Close connection
-            mysqli_close($db);
+
+                // Close statement
+                mysqli_stmt_close($stmt);
+            }
+        } else {
+            header("Location: login.php?tab=0");
+        };
+        // Close connection
+        mysqli_close($db);
+    }
+
+
+    if (isset($_POST['signin']) && $_POST['signin'] == "signin") { //Sign in
+        $_SESSION['msg'] = "";
+        // Check if username is empty
+        if (empty(trim(mysqli_real_escape_string($db, $_POST['logUsername'])))) {
+            $username_err = "Please enter username";
+        } else {
+            $username = trim(mysqli_real_escape_string($db, $_POST['logUsername']));
         }
 
+        // Check if password is empty
+        if (empty(trim(mysqli_real_escape_string($db, $_POST['logPassword'])))) {
+            $password_err = "Please enter your password";
+        } else {
+            $password = trim(mysqli_real_escape_string($db, $_POST['logPassword']));
+        }
 
-        if (isset($_POST['signin']) && $_POST['signin'] == "signin") { //Sign in
-            $_SESSION['msg'] = "";
-            // Check if username is empty
-            if (empty(trim(mysqli_real_escape_string($db, $_POST['logUsername'])))) {
-                $username_err = "Please enter username";
-            } else {
-                $username = trim(mysqli_real_escape_string($db, $_POST['logUsername']));
-            }
+        // Validate credentials
+        if (empty($username_err) && empty($password_err)) {
+            // Prepare a select statement
+            $sql = "SELECT id, username, password, fullname, admin FROM users WHERE username = ?";
 
-            // Check if password is empty
-            if (empty(trim(mysqli_real_escape_string($db, $_POST['logPassword'])))) {
-                $password_err = "Please enter your password";
-            } else {
-                $password = trim(mysqli_real_escape_string($db, $_POST['logPassword']));
-            }
+            if ($stmt = mysqli_prepare($db, $sql)) {
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "s", $param_username);
 
-            // Validate credentials
-            if (empty($username_err) && empty($password_err)) {
-                // Prepare a select statement
-                $sql = "SELECT id, username, password, fullname FROM users WHERE username = ?";
+                // Set parameters
+                $param_username = $username;
 
-                if ($stmt = mysqli_prepare($db, $sql)) {
-                    // Bind variables to the prepared statement as parameters
-                    mysqli_stmt_bind_param($stmt, "s", $param_username);
-
-                    // Set parameters
-                    $param_username = $username;
-
-                    // Attempt to execute the prepared statement
-                    if (mysqli_stmt_execute($stmt)) {
-                        // Store result
-                        mysqli_stmt_store_result($stmt);
-                        // Check if username exists, if yes then verify password
-                        if (mysqli_stmt_num_rows($stmt) == 1) {
-                            // Bind result variables
-                            mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $fullname);
-                            if (mysqli_stmt_fetch($stmt)) {
-                                if (password_verify($password, $hashed_password)) {
-                                    // Password is correct, so start a new session
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt)) {
+                    // Store result
+                    mysqli_stmt_store_result($stmt);
+                    // Check if username exists, if yes then verify password
+                    if (mysqli_stmt_num_rows($stmt) == 1) {
+                        // Bind result variables
+                        mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $fullname, $admin);
+                        if (mysqli_stmt_fetch($stmt)) {
+                            if (password_verify($password, $hashed_password)) {
+                                // Password is correct, so start a new session
+                                if (session_status() == PHP_SESSION_NONE) {
                                     session_start();
+                                } // silence a warning
 
-                                    // Store data in session variables
-                                    $_SESSION["loggedin"] = true;
-                                    $_SESSION["id"] = $id;
-                                    $_SESSION["username"] = $username;
-                                    $_SESSION["fullname"] = $fullname;
-                                    unset($_SESSION['error']);
-                                    // Redirect user to welcome page
+                                // Store data in session variables
+                                $_SESSION["loggedin"] = true;
+                                $_SESSION["id"] = $id;
+                                $_SESSION["username"] = $username;
+                                $_SESSION["fullname"] = $fullname;
+                                $_SESSION["admin"] = $admin;
+                                unset($_SESSION['error']);
+                                // Redirect user to welcome page
 
-                                    if ($_SESSION['username'] == 'administrator'){
-                                        header("location: dashboard.php");
-                                    } else{
-                                        header("location: index.php");
-                                    }
+                                if ($_SESSION['admin']) {
+                                    header("location: dashboard.php");
                                 } else {
-                                    // Display an error message if password is not valid
-                                    $_SESSION["error"] = "The password you entered was not valid";
-                                    header("location: login.php?tab=1&create=1");
+                                    header("location: index.php");
                                 }
+                            } else {
+                                // Display an error message if password is not valid
+                                $_SESSION["error"] = "The password you entered was not valid";
+                                header("location: login.php?tab=1&create=1");
                             }
-                        } else {
-                            // Display an error message if username doesn't exist
-                            $_SESSION["error"] = "No account found";
-                            header("location: login.php?tab=1");
                         }
                     } else {
-                        $_SESSION["error"] = "Something went wrong. Please try again";
+                        // Display an error message if username doesn't exist
+                        $_SESSION["error"] = "No account found";
                         header("location: login.php?tab=1");
                     }
-
-                    // Close statement
-                    mysqli_stmt_close($stmt);
+                } else {
+                    $_SESSION["error"] = "Something went wrong. Please try again";
+                    header("location: login.php?tab=1");
                 }
-            }
 
-            // Close connection
-            mysqli_close($db);
+                // Close statement
+                mysqli_stmt_close($stmt);
+            }
         }
+
+        // Close connection
+        mysqli_close($db);
+    }
 }
 ?>
 
@@ -299,16 +304,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-right">
             <div class="tab">
                 <div class="tab-inner">
-                    <button class="tablinks <?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0){echo "active";}; ?>" onclick="openTab(event, 'signup')" id="defaultOpen">Sign Up</button>
+                    <button class="tablinks <?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0) {
+                        echo "active";
+                    }; ?>" onclick="openTab(event, 'signup')" id="defaultOpen">Sign Up</button>
                 </div>
                 <div class="tab-inner">
-                    <button class="tablinks <?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1){echo "active";}; ?>" onclick="openTab(event, 'signin')">Sign In</button>
+                    <button class="tablinks <?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1) {
+                        echo "active";
+                    }; ?>" onclick="openTab(event, 'signin')">Sign In</button>
                 </div>
             </div>
 
 
-                <div class="tabcontent" id="signup" style="<?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0){echo "display:block";}
-                elseif (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1){echo "display: none";}else{echo "";}; ?>">
+                <div class="tabcontent" id="signup" style="<?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0) {
+                    echo "display:block";
+                } elseif (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1) {
+                    echo "display: none";
+                } else {
+                    echo "";
+                }; ?>">
                     <form class="form-detail" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <div class="form-row">
                         <label class="form-row-inner">
@@ -354,36 +368,39 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="hidden" name="signup" id="signup" value="signup">
                         <input type="submit" name="reg_user" class="register" value="Register">
                     </div>
-                        <?php if ( isset($_GET['success']) && $_GET['success'] == 1 )
-                        {
+                        <?php if (isset($_GET['success']) && $_GET['success'] == 1) {
                             // treat the succes case ex:
                             echo "      You can now login";
                         } ?>
-                        <?php if ( isset($_GET['success']) && $_GET['success'] == 0 )
-                        {
+                        <?php if (isset($_GET['success']) && $_GET['success'] == 0) {
                             // treat the succes case ex:
                             echo "     Wrong Password";
                         } ?>
-                        <?php if ( isset($_GET['username']) && $_GET['username'] == 0){
+                        <?php if (isset($_GET['username']) && $_GET['username'] == 0) {
                             echo "     Wrong Username";
                         } ?>
-                        <?php if ( isset($_GET['logout']) && $_GET['logout'] == 1 )
-                        {
+                        <?php if (isset($_GET['logout']) && $_GET['logout'] == 1) {
                             echo "      Successfully logged out";
                         } ?>
                         <span class="help-block"><?php
-                            if (isset($_SESSION['error'])){
+                            if (isset($_SESSION['error'])) {
                                 echo $_SESSION["error"];
                             }
-                            if (isset($_SESSION['msg'])){
+                            if (isset($_SESSION['msg'])) {
                                 echo $_SESSION['msg'];
                             }
-                            ;?></span>
+;?></span>
                 </div>
             </form>
 
 
-            <div class="tabcontent" id="signin" style="<?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1){echo "display:block";}elseif(isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0){echo "display: none";}else{echo "";}; ?>">
+            <div class="tabcontent" id="signin" style="<?php if (isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 1) {
+                echo "display:block";
+            } elseif(isset($_GET['tab']) && $_GET['tab'] !== null && $_GET['tab'] == 0) {
+                echo "display: none";
+            } else {
+                echo "";
+            }; ?>">
             <form class="form-detail" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
                     <div class="form-row">
@@ -406,13 +423,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     </div>
                     <span class="help-block"><?php
-                        if (isset($_SESSION['error'])){
+                        if (isset($_SESSION['error'])) {
                             echo $_SESSION["error"];
                         }
-                        if (isset($_SESSION['msg'])){
+                        if (isset($_SESSION['msg'])) {
                             echo $_SESSION['msg'];
                         }
-                        ;?></span>
+;?></span>
                 </div>
             </form>
         </div>
@@ -421,11 +438,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <script>
     <?php
-    if (!isset($_GET['tab'])){
+    if (!isset($_GET['tab'])) {
         echo "document.getElementById(\"defaultOpen\").click();";
     }
 
-    ?>
+?>
     //
 
 </script>

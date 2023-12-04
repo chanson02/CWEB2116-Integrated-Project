@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $randomNumber = mt_rand(10000000, 99999999);
 
-        if ($new_category == NULL && $category != NULL) { //If cateogory is selected and no new category is made
+        if ($new_category == null && $category != null) { //If cateogory is selected and no new category is made
             $query1 = "insert into EqManage.equipment (equipment,category,totalQuantity,leftQuantity,barcodeID,imgID) 
                         values ('$name','$category','$quantity','$quantity','$randomNumber', '$imgID')";
 
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Error: " . $query1 . "<br>" . mysqli_error($db);
             }
 
-        } elseif ($new_category != NULL) { //If new category is made
+        } elseif ($new_category != null) { //If new category is made
             $cat_query = "Insert into EqManage.categories (categoryName) values ('$new_category')";
             if (mysqli_query($db, $cat_query)) {
                 $last_id = mysqli_insert_id($db); //The inserted item's ID
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
     }
-    if (isset($_POST['remove']) && $_POST['remove'] == 1 && $_POST['type'] == 1){ //Equipment remove action called
+    if (isset($_POST['remove']) && $_POST['remove'] == 1 && $_POST['type'] == 1) { //Equipment remove action called
         $eqID = $_POST['id'];
         $getImgID = mysqli_query($db, "Select imgID from EqManage.equipment where id = '$eqID'");
         while ($row = mysqli_fetch_array($getImgID)) {
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    if (isset($_POST['remove']) && $_POST['remove'] == 1 && $_POST['type'] == 2){//Category remove action called
+    if (isset($_POST['remove']) && $_POST['remove'] == 1 && $_POST['type'] == 2) {//Category remove action called
         $catID = $_POST['id'];
         $query2 = "Delete from EqManage.categories where id="."$catID";
         if (mysqli_query($db, $query2)) {
@@ -92,24 +92,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     if ($row['leftQuantity'] >= 1) {
                         echo "Available";
-                    } elseif ($row['leftQuantity'] <= 0){
+                    } elseif ($row['leftQuantity'] <= 0) {
                         echo "Not Available";
-                    } else echo "Error";
+                    } else {
+                        echo "Error";
+                    }
 
-                    ?>
+            ?>
                 </td>
-                <td><?php if ($row['users_id'] != null){
+                <td><?php if ($row['users_id'] != null) {
                     echo "<a href='search.php?type=1&id=".$row['users_id']."'>".$row['users_id']."</a>";
-                } else echo "-";
+                } else {
+                    echo "-";
+                }
 
-                    ?></td>
-                <td><?php if ($row['users_id'] != null){
-                        echo "<a href='search.php?type=3&id=".$row['lastLog_id']."'>".$row['lastLog_id']."</a>";
-                    } else echo "-"; ?></td>
+            ?></td>
+                <td><?php if ($row['users_id'] != null) {
+                    echo "<a href='search.php?type=3&id=".$row['lastLog_id']."'>".$row['lastLog_id']."</a>";
+                } else {
+                    echo "-";
+                } ?></td>
                 <td><button type='button' class='btn btn-link' id="removeEq" style="padding: 0; margin: 0" onclick="removeEq(this.value)" value="<?php echo $row['id']; ?>">Remove</button></td>
 
             </tr>
         <?php }
-    }
+        }
 }
-    ?>
+?>

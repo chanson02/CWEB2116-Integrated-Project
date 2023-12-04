@@ -1,8 +1,10 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
-header('Location: index.php');
-exit();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
+    header('Location: index.php');
+    exit();
 }
 ?>
 
@@ -29,34 +31,34 @@ include('header.php')
 
             include('serverconnect.php');
 
-            $equipmentName = "";
+$equipmentName = "";
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-
-                $userID = $_SESSION['id'];
-                echo $userID;
-                $equipmentID = $_POST['equipment'];
-//                echo $equipmentID;
-                $checkoutRequestsID = $_POST['checkoutRequestsID'];
-                echo $checkoutRequestsID;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
-                $query = mysqli_query($db,"select * from EqManage.equipment where id = '$equipmentID'");
-            while ($row = mysqli_fetch_array($query)){
-                $equipmentName = $row['equipment'];
-            }
-//            echo $equipmentName;
-
-                echo '<h3 style="text-align: center"><b>Do you really want to return: </b></h3>';
-                echo "<h1 style='text-align: center'><b>$equipmentName</b></h1>";
+    $userID = $_SESSION['id'];
+    echo $userID;
+    $equipmentID = $_POST['equipment'];
+    //                echo $equipmentID;
+    $checkoutRequestsID = $_POST['checkoutRequestsID'];
+    echo $checkoutRequestsID;
 
 
+    $query = mysqli_query($db, "select * from EqManage.equipment where id = '$equipmentID'");
+    while ($row = mysqli_fetch_array($query)) {
+        $equipmentName = $row['equipment'];
+    }
+    //            echo $equipmentName;
 
-            }
+    echo '<h3 style="text-align: center"><b>Do you really want to return: </b></h3>';
+    echo "<h1 style='text-align: center'><b>$equipmentName</b></h1>";
 
 
-            ?>
+
+}
+
+
+?>
 
         <form method="post" action="return-process.php">
             <input type="hidden" name="userid" value="<?php echo $userID ?>">
@@ -70,7 +72,6 @@ include('header.php')
     </div>
 
 </div>
-
 
 
 

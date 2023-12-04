@@ -1,11 +1,14 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 ?>
@@ -15,15 +18,15 @@ if ($_SESSION['username'] != 'administrator'){
         <select id="userSelect" style="width: 20%; text-align: left;margin-bottom: 10px" onchange="change()">
 
                 <?php
-                $returnResult = mysqli_query($db,"select * from EqManage.users");
-                while ($row = mysqli_fetch_array($returnResult)){
+                $returnResult = mysqli_query($db, "select * from EqManage.users");
+while ($row = mysqli_fetch_array($returnResult)) {
 
-                    echo "<option value=\"\">Select User</option>";
-                    $userID = $row['id'];
-                    $fullname = $row['fullname'];
-                    echo "<option value='$userID'>ID: $userID | Name: $fullname</option>";
-                };
-                ?>
+    echo "<option value=\"\">Select User</option>";
+    $userID = $row['id'];
+    $fullname = $row['fullname'];
+    echo "<option value='$userID'>ID: $userID | Name: $fullname</option>";
+};
+?>
 
         </select>
     </div>
@@ -31,8 +34,8 @@ if ($_SESSION['username'] != 'administrator'){
 
 <div id="user" class="tab-pane fade in active bootstrap-iso user" style="margin-top: 10px">
         <?php
-        include ('fetchSearchUser.php');
-        ?>
+        include('fetchSearchUser.php');
+?>
     </div>
 </div>
 

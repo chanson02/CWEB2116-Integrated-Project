@@ -1,11 +1,14 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 ?>
 
@@ -22,10 +25,10 @@ include('header.php')
 
 <?php
 
-if ($_SESSION['username'] == 'administrator'){
-    include ('adminNavbar.php');
-} else{
-    include ('navbar.php');
+if ($_SESSION['admin']) {
+    include('adminNavbar.php');
+} else {
+    include('navbar.php');
 }
 
 include('serverconnect.php');
@@ -57,7 +60,7 @@ include('serverconnect.php');
                     <?php
 
                     $resultset = mysqli_query($db, "select * from EqManage.categories");
-                    ?>
+?>
                     <div class="select-style" style="width:500px; margin: auto;" align="center">
                             <input type="text" name="name" placeholder="Equipment Name" id="name" required/>
                             Quantity: <input type="number" min="1" max="100" name="quantity" value="1" id="qty" style="margin-top: 5px;margin-bottom: 5px" required/>
@@ -187,8 +190,8 @@ include('serverconnect.php');
 
 <?php
 
-if ($_SESSION['username'] == 'administrator'){
-    include ('adminModal.php');
+if ($_SESSION['admin']) {
+    include('adminModal.php');
 }
 
 ?>
@@ -250,7 +253,7 @@ if ($_SESSION['username'] == 'administrator'){
             var e = document.getElementById("cat");
             var cat = e.options[e.selectedIndex].value;
             var ncat = document.getElementById("other").value;
-            var img = document.getElementById("eqImg").value;
+            var img = document.getElementById("eqImg").value; // this was getting the wrong image?
             $.ajax({
                 url: "editEq.php",
                 type: "POST",

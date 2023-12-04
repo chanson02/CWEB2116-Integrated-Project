@@ -1,13 +1,16 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
-include ('serverconnect.php');
+include('serverconnect.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -31,16 +34,46 @@ include('header.php')
         <div class="select-box">
             <label for="select-box1" class="label select-box1"><span class="label-desc">Filter By: </span> </label>
             <label for="checkoutDateRadio">
-            <input type="radio" id="checkoutDateRadio" name="filter" value="0" <?php $filter = $_GET['filter']; if ($filter == 0 or $filter == null){echo 'checked = "checked"';}else echo null;?>  onclick="changeOption();"> Checkout Date</label>
+            <input type="radio" id="checkoutDateRadio" name="filter" value="0" <?php $filter = $_GET['filter'] ?? null;
+if ($filter == 0 or $filter == null) {
+    echo 'checked = "checked"';
+} else {
+    echo null;
+}?>  onclick="changeOption();"> Checkout Date</label>
             <label for="returnDateRadio">
-            <input type="radio" id="returnDateRadio" name="filter" value="1" <?php $filter = $_GET['filter']; if ($filter == 1){echo 'checked = "checked"';}else echo null;?> onclick="changeOption();"> Return Date</label>
+            <input type="radio" id="returnDateRadio" name="filter" value="1" <?php $filter = $_GET['filter'] ?? null;
+if ($filter == 1) {
+    echo 'checked = "checked"';
+} else {
+    echo null;
+}?> onclick="changeOption();"> Return Date</label>
            <br>
             <label for="select-box1" class="label select-box1" id="selectLabel">Show checkout from: </label>
             <select id="select-box1" class="select" name="filtercat" onchange="changeOption()" style="width: 15%">
-                <option value="0" <?php $range = $_GET['range']; if ($range == 0 or $range ==null){echo 'selected';}else echo null;?>>--All Time--</option>
-                <option value="1" <?php $range = $_GET['range']; if ($range == 1){echo 'selected';}else echo null;?>>Today</option>
-                <option value="2" <?php $range = $_GET['range']; if ($range == 2){echo 'selected';}else echo null;?>>Yesturday</option>
-                <option value="3" <?php $range = $_GET['range']; if ($range == 3){echo 'selected';}else echo null;?>>Past 7 days</option>
+                <option value="0" <?php $range = $_GET['range'] ?? null;
+if ($range == 0 or $range == null) {
+    echo 'selected';
+} else {
+    echo null;
+}?>>--All Time--</option>
+                <option value="1" <?php $range = $_GET['range'] ?? null;
+if ($range == 1) {
+    echo 'selected';
+} else {
+    echo null;
+}?>>Today</option>
+                <option value="2" <?php $range = $_GET['range'] ?? null;
+if ($range == 2) {
+    echo 'selected';
+} else {
+    echo null;
+}?>>Yesturday</option>
+                <option value="3" <?php $range = $_GET['range'] ?? null;
+if ($range == 3) {
+    echo 'selected';
+} else {
+    echo null;
+}?>>Past 7 days</option>
 
             </select>
             <br>
@@ -80,8 +113,8 @@ include('header.php')
 
 <?php
 
-if ($_SESSION['username'] == 'administrator'){
-    include ('adminModal.php');
+if ($_SESSION['admin']) {
+    include('adminModal.php');
 }
 
 ?>
@@ -108,7 +141,7 @@ if ($_SESSION['username'] == 'administrator'){
         var radios = document.getElementsByName("filter");
 
 
-        //var userID = "<?php //$ID = $_GET['user']; if ($ID){echo $ID;}; ?>//";
+        //var userID = "<?php //$ID = $_GET['user']; if ($ID){echo $ID;};?>//";
         //if (userID == null){
         var f = document.getElementById("filterUser");
         userID = f.value;
@@ -142,7 +175,10 @@ if ($_SESSION['username'] == 'administrator'){
         var radios = document.getElementsByName("filter");
 
         if (userID == null){
-            userID = "<?php $ID = $_GET['user']; if ($ID){echo $ID;}; ?>";
+            userID = "<?php $ID = $_GET['user'] ?? null;
+if ($ID) {
+    echo $ID;
+}; ?>";
         }
 
         for (var i = 0, length = radios.length; i < length; i++) {
@@ -168,7 +204,10 @@ if ($_SESSION['username'] == 'administrator'){
         var f = document.getElementById("filterUser");
 
 
-        var userID = "<?php $ID = $_GET['user']; if ($ID){echo $ID;}; ?>";
+        var userID = "<?php $ID = $_GET['user'] ?? null;
+if ($ID) {
+    echo $ID;
+}; ?>";
         if (userID != null){
             f.value = userID;
         }
@@ -233,4 +272,3 @@ if ($_SESSION['username'] == 'administrator'){
 
 
 </body>
-

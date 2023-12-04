@@ -1,30 +1,34 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 include('serverconnect.php');
-$userID = $_GET['id'];
+$userID = $_GET['id'] ?? 0;
 
 $query = "Select * from EqManage.users 
 left join log l on l.users_id = users.id 
 left join equipment e on e.id = l.equipment_id
 where users.id=$userID";
 $borrowing = 0;
-$borrowed =0;
+$borrowed = 0;
 $overdue = 0;
 $result = mysqli_query($db, $query);
 while ($row = mysqli_fetch_array($result)) {
     $fullname = $row['fullname'];
-    if ($row['returnDate'] == null && $row['checkoutRequests_id'] != null){ //User that has a record in log
+    if ($row['returnDate'] == null && $row['checkoutRequests_id'] != null) { //User that has a record in log
         $borrowing++;
         $borrowed++;
-    } elseif($row['returnDate']!= null && $row['checkoutRequests_id'] != null ) {
+    } elseif($row['returnDate'] != null && $row['checkoutRequests_id'] != null) {
         $borrowed++;
     }
     $today = date("Y-m-d H:i:s");
@@ -36,9 +40,9 @@ while ($row = mysqli_fetch_array($result)) {
 
 }
 
-if ($userID == null){
+if ($userID == null) {
     $borrowing = "-";
-    $borrowed ="-";
+    $borrowed = "-";
     $overdue = "-";
     $fullname = "-";
     $userID = "-";

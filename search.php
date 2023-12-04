@@ -1,11 +1,14 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 
@@ -58,8 +61,8 @@ include('serverconnect.php');
 </div>
 
 <?php
-if ($_SESSION['username'] == 'administrator'){
-    include ('adminModal.php');
+if ($_SESSION['admin']) {
+    include('adminModal.php');
 }
 
 ?>
@@ -105,18 +108,22 @@ if ($_SESSION['username'] == 'administrator'){
 
     <?php
     $id = $_GET['id'];
-    $type = $_GET['type'];
-    $target = "";
-    switch ($type){
-        case 1 : $target = "userSelect"; break;
-        case 2 : $target = "eqSelect"; break;
-        case 3 : $target = "logSelect"; break;
-        case 4 : $target = "requestSelect"; break;
-        case 5 : $target = "categorySelect";
-    }
-    if ($id != null){
-        echo "$('#$target').val('$id');
+$type = $_GET['type'];
+$target = "";
+switch ($type) {
+    case 1: $target = "userSelect";
+        break;
+    case 2: $target = "eqSelect";
+        break;
+    case 3: $target = "logSelect";
+        break;
+    case 4: $target = "requestSelect";
+        break;
+    case 5: $target = "categorySelect";
+}
+if ($id != null) {
+    echo "$('#$target').val('$id');
     $('#$target').trigger('change');";
-    }
-    ?>
+}
+?>
 </script>

@@ -1,11 +1,15 @@
 <?php
-session_start();
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
 if (!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator') {
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 include('serverconnect.php');
@@ -42,5 +46,3 @@ while ($row = mysqli_fetch_array($query2)) {
     }
 }
 echo "<h3 class=\"card-title\">", $overdue, "</h3>";
-
-

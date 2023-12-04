@@ -1,11 +1,15 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1'); //Redirects to the main page if students attempts to login
+    exit(); // silence `headers already set` warning
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {//When POST request was sent
@@ -22,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {//When POST request was sent
     } //Get name of the equipment to send notification
 
     $checkNotif = mysqli_query($db, "Select * from notification where message = '$eqName was successfully checked out' and target = '$userID'");
-    if(mysqli_num_rows($checkNotif) != null){ //If same notification was sent before, reuse the notification, it saves storage space
+    if(mysqli_num_rows($checkNotif) != null) { //If same notification was sent before, reuse the notification, it saves storage space
         $updateNotif = "Update EqManage.notification set status = 0, datetime = '$today' where message = '$eqName was successfully checked out' and target = '$userID'";
         if (mysqli_query($db, $updateNotif)) {
             $last_id = mysqli_insert_id($db);
@@ -30,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {//When POST request was sent
         } else {
             echo "Error: " . $updateNotif . "<br>" . mysqli_error($db);
         }
-    } else{ //If the notification was never sent before, add notification to the database
+    } else { //If the notification was never sent before, add notification to the database
         echo "empty";
         $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$eqName was successfully checked out' ,'$userID',0, '$today')";
         if (mysqli_query($db, $notif_query)) {
@@ -59,15 +63,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {//When POST request was sent
         $updateEquipment = "Update EqManage.equipment set popularity = popularity + 1, lastLog_id = '$logID', users_id = '$userID' where id = '$eqID'";
     }
 
-        if (mysqli_query($db, $query)) {
-            echo "Successfully updated table";
-        } else {
-            echo "Error: " . $query . "<br>" . mysqli_error($db);
-        }
+    if (mysqli_query($db, $query)) {
+        echo "Successfully updated table";
+    } else {
+        echo "Error: " . $query . "<br>" . mysqli_error($db);
+    }
 
-        if (mysqli_query($db, $updateEquipment)) {
-            echo "Successfully updated table";
-        } else {
-            echo "Error: " . $query . "<br>" . mysqli_error($db);
-        }
+    if (mysqli_query($db, $updateEquipment)) {
+        echo "Successfully updated table";
+    } else {
+        echo "Error: " . $query . "<br>" . mysqli_error($db);
+    }
 }

@@ -1,16 +1,20 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 include('serverconnect.php');
-$userPOSTID = $_POST['id'];
-$equipmentID = $_POST['eqID'];
+$userPOSTID = $_POST['id'] ?? null;
+$equipmentID = $_POST['eqID'] ?? null;
 $result = mysqli_query($db, "Select u.fullname, u.id, l.users_id, l.checkoutRequests_id, l.checkoutRequestDate, l.expectedReturnDate
 from users u
 left join log l on u.id = l.users_id
@@ -33,5 +37,3 @@ while ($row = mysqli_fetch_array($result)) {
 }
 
 echo json_encode($users_arr);
-
-

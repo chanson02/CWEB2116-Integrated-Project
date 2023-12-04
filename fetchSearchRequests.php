@@ -1,11 +1,15 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 include('serverconnect.php');
 $rqID = $_GET['id'];
@@ -41,12 +45,12 @@ while ($row = mysqli_fetch_array($result)) {
     $username = $row['fullname'];
     $eqName = $row['equipment'];
 
-    $requestDate = explode(" ",$row['requestDate']);
-    $expectedReturnDate = explode(" ",$row['expectedReturnDate']);
+    $requestDate = explode(" ", $row['requestDate']);
+    $expectedReturnDate = explode(" ", $row['expectedReturnDate']);
 
 };
 
-if ($eqID == null){
+if ($eqID == null) {
     $rqID = "-";
     $eqID = "-";
     $userID = "-";
@@ -63,17 +67,17 @@ if ($eqID == null){
     $location = "-";
 
 };
-if ($returnDate[0] == null){
+if ($returnDate[0] == null) {
     $returnDate[0] = "Not returned yet";
 }
-if ($checkoutDate[0] == null){
+if ($checkoutDate[0] == null) {
     $checkoutDate[0] = "Not checked out yet";
 }
-if ($state == "approved"){
+if ($state == "approved") {
     $state = "Approved";
-} elseif ($state == "rejected"){
+} elseif ($state == "rejected") {
     $state = "Rejected";
-} elseif ($state == "waiting"){
+} elseif ($state == "waiting") {
     $state = "Waiting";
 }
 

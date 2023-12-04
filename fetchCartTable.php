@@ -1,25 +1,27 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
 
 include('serverconnect.php');
 
-if (empty($_SESSION['cart'])){
+if (empty($_SESSION['cart'])) {
     echo "<tr><td></td><td>No equipment in Cart</td><td></td></tr>";
 }
-foreach ($_SESSION['cart'] as $i){
+foreach ($_SESSION['cart'] as $i) {
     $eqName = "";
     $leftQty = 0;
-    $result = mysqli_query($db,"Select * from EqManage.equipment where id =".$i['id']);
+    $result = mysqli_query($db, "Select * from EqManage.equipment where id =".$i['id']);
     while ($row = mysqli_fetch_array($result)) {
         $eqName = $row['equipment'];
         $leftQty = $row['leftQuantity'];
         $imgID = $row['imgID'];
     }
-//    echo $i['id'];
+    //    echo $i['id'];
     ?>
     <tr>
         <td><?php echo $eqName ?></td>

@@ -1,10 +1,14 @@
-<?php session_start();
-if(!isset($_SESSION['loggedin'])){
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }?>
 
 <div id="eq_button" class=" bootstrap-iso eq" style="margin-top: 10px">
@@ -12,14 +16,14 @@ if ($_SESSION['username'] != 'administrator'){
         <label for="eqSelect" style="margin-top: 20px">Search:</label>
         <select id="eqSelect" style="width: 20%; text-align: left;margin-bottom: 10px" onchange="change()">
                 <?php
-                $returnResult = mysqli_query($db,"select * from EqManage.equipment");
-                while ($row = mysqli_fetch_array($returnResult)){
-                    echo "<option value=\"\">Select User</option>";
-                    $ID = $row['id'];
-                    $name = $row['equipment'];
-                    echo "<option value='$ID'>ID: $ID | Name: $name</option>";
-                };
-                ?>
+                $returnResult = mysqli_query($db, "select * from EqManage.equipment");
+while ($row = mysqli_fetch_array($returnResult)) {
+    echo "<option value=\"\">Select User</option>";
+    $ID = $row['id'];
+    $name = $row['equipment'];
+    echo "<option value='$ID'>ID: $ID | Name: $name</option>";
+};
+?>
         </select>
     </div>
 </div>

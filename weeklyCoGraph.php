@@ -1,17 +1,21 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 $dataPoints = array();
 
 include('serverconnect.php');
-$equipmentID = $_POST['id'];
+$equipmentID = $_POST['id'] ?? null;
 $result = mysqli_query($db, "select * from EqManage.log");
 
 
@@ -38,26 +42,31 @@ while ($row = mysqli_fetch_array($result)) {
     $checkoutDate = $row['checkoutDate'];
     $checkoutDateExplode = explode(" ", $checkoutDate);
 
-    switch ($checkoutDateExplode[0]){
-        case $oneday : $onecount++; break;
-        case $twoday : $twocount++; break;
-        case $threeday : $threecount++; break;
-        case $fourday : $fourcount++; break;
-        case $fiveday : $fivecount++; break;
-        case $sixday : $sixcount++; break;
-        case $today : $todaycount++;
+    switch ($checkoutDateExplode[0]) {
+        case $oneday: $onecount++;
+            break;
+        case $twoday: $twocount++;
+            break;
+        case $threeday: $threecount++;
+            break;
+        case $fourday: $fourcount++;
+            break;
+        case $fiveday: $fivecount++;
+            break;
+        case $sixday: $sixcount++;
+            break;
+        case $today: $todaycount++;
     }
 }
 
 $dataPoints = array(
-    array("label"=> $sixday, "y"=> $sixcount),
-    array("label"=> $fiveday, "y"=> $fivecount),
-    array("label"=> $fourday, "y"=> $fourcount),
-    array("label"=> $threeday, "y"=> $threecount),
-    array("label"=> $twoday, "y"=> $twocount),
-    array("label"=> $oneday, "y"=> $onecount),
-    array("label"=> $today, "y"=> $todaycount),
+    array("label" => $sixday, "y" => $sixcount),
+    array("label" => $fiveday, "y" => $fivecount),
+    array("label" => $fourday, "y" => $fourcount),
+    array("label" => $threeday, "y" => $threecount),
+    array("label" => $twoday, "y" => $twocount),
+    array("label" => $oneday, "y" => $onecount),
+    array("label" => $today, "y" => $todaycount),
 );
 
 echo json_encode($dataPoints, JSON_NUMERIC_CHECK);
-

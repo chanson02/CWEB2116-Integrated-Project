@@ -1,12 +1,16 @@
 <?php
+
 include('serverconnect.php');
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 
 $hash = $_POST['hash'];
@@ -132,7 +136,7 @@ if ($mode == '1') {
             }
         }
     }
-} elseif ($mode == '0'){
+} elseif ($mode == '0') {
     if (isset($_POST['accept'])) {
         $query = mysqli_query($db, "select * from EqManage.requests where state = 'waiting'");
         while ($row = mysqli_fetch_array($query)) {
@@ -150,7 +154,7 @@ if ($mode == '1') {
             }
             $message = 'Your checkout request was accepted';
             $checkNotif = mysqli_query($db, "Select * from notification where message = '$message' and target = '$userID'");
-            if(mysqli_num_rows($checkNotif) != null){
+            if(mysqli_num_rows($checkNotif) != null) {
                 echo "present";
                 $updateNotif = "Update EqManage.notification set status = 0 where message = '$message' and target = '$userID'";
                 if (mysqli_query($db, $updateNotif)) {
@@ -159,7 +163,7 @@ if ($mode == '1') {
                 } else {
                     echo "Error: " . $updateNotif . "<br>" . mysqli_error($db);
                 }
-            } else{
+            } else {
                 echo "empty";
                 $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$message' ,'$userID',0, '$date')";
                 if (mysqli_query($db, $notif_query)) {
@@ -175,7 +179,7 @@ if ($mode == '1') {
         $query = "UPDATE EqManage.requests SET active='1',state='approved' WHERE state = 'waiting'";
         mysqli_query($db, $query);
 
-    }elseif (isset($_POST['reject'])){
+    } elseif (isset($_POST['reject'])) {
 
         $userID = "";
         $query = mysqli_query($db, "select * from EqManage.requests where state = 'waiting'");
@@ -186,12 +190,12 @@ if ($mode == '1') {
             $userID = $row['users_id'];
             $updateEquipment = "UPDATE EqManage.equipment SET leftQuantity = leftQuantity + '$checkoutQty' where id = '$eqID'"; //Put back the checked out quantity
             $updateAvailability = "Update EqManage.equipment set availability = 1 where id = '$equipment_id'";
-            mysqli_query($db,$updateAvailability);
+            mysqli_query($db, $updateAvailability);
             mysqli_query($db, $updateEquipment);
             $date = date('Y-m-d H:i:s');
             $message = 'Your checkout request was rejected';
             $checkNotif = mysqli_query($db, "Select * from notification where message = '$message' and target = '$userID'");
-            if(mysqli_num_rows($checkNotif) != null){
+            if(mysqli_num_rows($checkNotif) != null) {
                 echo "present";
                 $updateNotif = "Update EqManage.notification set status = 0 where message = '$message' and target = '$userID'";
                 if (mysqli_query($db, $updateNotif)) {
@@ -200,7 +204,7 @@ if ($mode == '1') {
                 } else {
                     echo "Error: " . $updateNotif . "<br>" . mysqli_error($db);
                 }
-            } else{
+            } else {
                 echo "empty";
                 $notif_query = "INSERT into EqManage.notification (message,target,status,datetime) values ('$message' ,'$userID',0, '$date')";
                 if (mysqli_query($db, $notif_query)) {
@@ -219,14 +223,13 @@ if ($mode == '1') {
 }
 
 
-$headerRefer = substr($referer,strrpos($referer,'/') + 1);
+$headerRefer = substr($referer, strrpos($referer, '/') + 1);
 echo $headerRefer;
 
-if ($referer != null){
-    header("Location: $headerRefer?verify=1" );
-} elseif ($referer == null){
+if ($referer != null) {
+    header("Location: $headerRefer?verify=1");
+} elseif ($referer == null) {
     header('Location: index.php?verify=1');
-} else header('Location: index.php');
-
-
-
+} else {
+    header('Location: index.php');
+}

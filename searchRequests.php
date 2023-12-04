@@ -1,11 +1,14 @@
 <?php
-session_start();
-if(!isset($_SESSION['loggedin'])){
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} // silence a warning
+if(!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit();
 }
-if ($_SESSION['username'] != 'administrator'){
+if (!$_SESSION['admin']) {
     header('Location: index.php?adminonly=1');
+    exit(); // silence `headers already set` warning
 }
 ?>
 
@@ -15,15 +18,15 @@ if ($_SESSION['username'] != 'administrator'){
         <select id="requestSelect" style="width: 50%; text-align: left;margin-bottom: 10px" onchange="change()" >
                 <?php
 
-                $returnResult = mysqli_query($db,"select * from EqManage.requests");
-                while ($row = mysqli_fetch_array($returnResult)){
+                $returnResult = mysqli_query($db, "select * from EqManage.requests");
+while ($row = mysqli_fetch_array($returnResult)) {
 
-                    echo "<option value=\"\">Select User</option>";
-                    $ID = $row['id'];
-                    $date = $row['requestDate'];
-                    echo "<option value='$ID'>ID: $ID | Request Date: $date</option>";
-                };
-                ?>
+    echo "<option value=\"\">Select User</option>";
+    $ID = $row['id'];
+    $date = $row['requestDate'];
+    echo "<option value='$ID'>ID: $ID | Request Date: $date</option>";
+};
+?>
         </select>
     </div>
 </div>
